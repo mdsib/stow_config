@@ -8,3 +8,4 @@ dotfiles/.config/nvim/rollbacks/*
 dotfiles/.config/nvim/temp/*
 dotfiles/.config/nvim/.netrwhist
 dotfiles/.config/cmus/*
+dotfiles/.zsh-update
