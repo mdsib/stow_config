@@ -1,0 +1,10 @@
+*~
+.viminfo
+*.swp
+*.swo
+.DS_STORE
+dotfiles/.config/nvim/plugged/*
+dotfiles/.config/nvim/rollbacks/*
+dotfiles/.config/nvim/temp/*
+dotfiles/.config/nvim/.netrwhist
+dotfiles/.config/cmus/*
