@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<root>
+  <symbol_map type="KeyCode" name="MY_SYM" value="0xa"/>
+  <modifierdef>MY_HYPER</modifierdef>
+  <modifierdef>MY_META</modifierdef>
+  
+  <devicevendordef>
+      <vendorname>KINESIS</vendorname>
+      <vendorid>0x05f3</vendorid>
+  </devicevendordef>
+  <deviceproductdef>
+      <productname>ADVANTAGE</productname>
+      <productid>0x0007</productid>
+  </deviceproductdef>
+  
+  <item>
+    <name>kinesis hyper and meta</name>
+    <device_only>DeviceVendor::KINESIS, DeviceProduct::ADVANTAGE</device_only>
+    <identifier>private.khmr</identifier>
+    <autogen>__KeyToKey__ KeyCode::CURSOR_LEFT, KeyCode::VK_MODIFIER_MY_HYPER</autogen>
+    <autogen>__KeyToKey__ KeyCode::CURSOR_RIGHT, KeyCode::VK_MODIFIER_MY_META</autogen>
+  </item>
+  <item>
+	<name>Hypermode</name>
+	<appendix>Enables hypermode navigation, parens, and more.</appendix>
+    <identifier>private.hyper_mode</identifier>
+
+    <autogen>__KeyToKey__ KeyCode::H, ModifierFlag::MY_HYPER, KeyCode::CURSOR_LEFT</autogen>
+    <autogen>__KeyToKey__ KeyCode::J, ModifierFlag::MY_HYPER, KeyCode::CURSOR_DOWN</autogen>
+    <autogen>__KeyToKey__ KeyCode::K, ModifierFlag::MY_HYPER, KeyCode::CURSOR_UP</autogen>
+    <autogen>__KeyToKey__ KeyCode::L, ModifierFlag::MY_HYPER, KeyCode::CURSOR_RIGHT</autogen>
+
+    <autogen>__KeyToKey__ KeyCode::H, ModifierFlag::MY_HYPER, KeyCode::CURSOR_LEFT</autogen>
+    <autogen>__KeyToKey__ KeyCode::J, ModifierFlag::MY_HYPER, KeyCode::CURSOR_DOWN</autogen>
+    <autogen>__KeyToKey__ KeyCode::K, ModifierFlag::MY_HYPER, KeyCode::CURSOR_UP</autogen>
+    <autogen>__KeyToKey__ KeyCode::L, ModifierFlag::MY_HYPER, KeyCode::CURSOR_RIGHT</autogen>
+
+
+    <autogen>__KeyToKey__ KeyCode::I, ModifierFlag::MY_HYPER | ModifierFlag::NONE, KeyCode::9, ModifierFlag::SHIFT_L</autogen>
+    <autogen>__KeyToKey__ KeyCode::O, ModifierFlag::MY_HYPER | ModifierFlag::NONE, KeyCode::0, ModifierFlag::SHIFT_L</autogen>
+
+    <autogen>__KeyToKey__ KeyCode::I, ModifierFlag::MY_META, KeyCode::BRACKET_LEFT, ModifierFlag::SHIFT_L</autogen>
+    <autogen>__KeyToKey__ KeyCode::O, ModifierFlag::MY_META, KeyCode::BRACKET_RIGHT, ModifierFlag::SHIFT_L</autogen>
+
+    <autogen>__KeyToKey__ KeyCode::COMMA, ModifierFlag::MY_HYPER | ModifierFlag::NONE, KeyCode::BRACKET_LEFT</autogen>
+    <autogen>__KeyToKey__ KeyCode::DOT, ModifierFlag::MY_HYPER | ModifierFlag::NONE, KeyCode::BRACKET_RIGHT</autogen>
+
+    <autogen>__KeyToKey__ KeyCode::HOME, KeyCode::CURSOR_LEFT | ModifierFlag::CONTROL_L</autogen>
+    <autogen>__KeyToKey__ KeyCode::END, KeyCode::CURSOR_RIGHT | ModifierFlag::CONTROL_R</autogen>
+  </item>
+</root>
