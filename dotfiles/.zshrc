@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh installation.
-export ZSH=/Users/massimosiboldi/.oh-my-zsh
+export ZSH=/Users/mds/.oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -83,5 +83,7 @@ alias vim="nvim"
 alias g="git"
 alias next="cd ~/Repos/disqus/next"
 alias dw="cd ~/Repos/disqus/disqus"
-export PATH=$PATH:$HOME/bin
+export PATH=$PATH:$HOME/bin:/Library/TeX/texbin/
 export EDITOR=nvim
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
