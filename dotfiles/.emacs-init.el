@@ -2,12 +2,20 @@
                          ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 
-;; git repos
-(add-to-list 'load-path "~/.emacs.d/git/mk-project/")
-(require 'mk-project)
+; fetch the list of packages available 
+(unless package-archive-contents
+  (package-refresh-contents))
 
-(project-def "org" '((basedir "~/org")))
-(project-def "code" '((basedir "~/code")))
+; Install the missing packages
+(dolist (package package-selected-packages)
+  (unless (package-installed-p package)
+    (package-install package)))
+
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "firefox-developer")
+
+(setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 9))))
 
 ;; Activating stuff
 (which-key-mode 1)
@@ -41,11 +49,13 @@
 (global-set-key (kbd "C-w v") 'evil-window-vsplit)
 (global-set-key (kbd "C-w q") 'evil-window-delete)
 
+(global-set-key (kbd "C-SPC") 'ol-space)
 (global-set-key (kbd "C-@") 'ol-space)
 (global-set-key (kbd "C-@ C-@") 'set-mark-command)
+(global-set-key (kbd "C-@ C-SPC") 'set-mark-command)
 
 (global-set-key (kbd "C-x c") 'org-capture)
-(setq org-default-notes-file "~/org/agenda/todo.org")
+(setq org-default-notes-file "~/Dropbox/org/refile.org")
 (global-set-key (kbd "C-x a") 'org-agenda)
 (setq org-capture-templates
       '(("T" "todo at point" entry (file+headline "" "Todo")
@@ -94,7 +104,13 @@
             (add-to-list 'org-src-lang-modes '("js" . js2-jsx))
             (local-set-key (kbd "C-c t") 'org-toggle-heading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
-            (setq org-agenda-files '("~/org" "~/Documents/journal"))))
+            (setq org-agenda-files '("~/Dropbox/org" "~/Documents/journal"))))
+
+(setq org-agenda-custom-commands
+      '(("a" "todAy"
+         ((agenda "" ((org-agenda-ndays 7)))
+          (tags-todo "today")
+          (tags-todo "daily")))))
 
 
 ;; https://github.com/ternjs/tern/issues/701

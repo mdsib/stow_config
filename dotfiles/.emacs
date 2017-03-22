@@ -26,7 +26,7 @@
  '(org-startup-truncated nil)
  '(package-selected-packages
    (quote
-    (js-comint project-root project-persist find-file-in-project magithub sudo-edit evil-smartparens org-bullets which-key org-journal smart-tabs-mode auctex airline-themes web-mode color-theme json-mode js2-mode company-tern powerline-evil evil counsel ivy)))
+    (nodejs-repl org-pomodoro js-comint project-root project-persist find-file-in-project magithub sudo-edit evil-smartparens org-bullets which-key org-journal smart-tabs-mode auctex airline-themes web-mode color-theme json-mode js2-mode company-tern powerline-evil evil counsel ivy)))
  '(project-persist-keymap-prefix "P")
  '(project-persist-mode t)
  '(xterm-mouse-mode t))
@@ -38,3 +38,6 @@
  '(linum ((t (:inherit (shadow default) :background "black" :foreground "brightblack" :weight bold)))))
 
 (load-file "~/.emacs-init.el")
+(defvar local-el "~/.emacs-local.el")
+(if (file-exists-p local-el)
+    (load-file local-el))
