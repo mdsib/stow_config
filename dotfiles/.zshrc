@@ -83,6 +83,8 @@ alias vim="nvim"
 alias g="git"
 alias next="cd ~/Repos/disqus/next"
 alias dw="cd ~/Repos/disqus/disqus"
+# this should be a script, not an alias. and plz create init script to get env
+alias dotfiles="STWCFG_TARGET=arch zsh ~/stow_config/build.zsh"
 export PATH=$PATH:$HOME/bin:/Library/TeX/texbin/
 export EDITOR=nvim
 PS1='%n%m %~ %(?..[%?] )%# '
