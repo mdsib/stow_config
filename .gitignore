@@ -13,14 +13,6 @@
 #osx lol
 .DS_STORE
 
-#blacklisting configs
-dotfiles/.config/deluge/*
-dotfiles/.config/gtk-2.0/*
-dotfiles/.config/mupen64plus/*
-dotfiles/.config/nvim/plugged/*
-dotfiles/.config/nvim/rollbacks/*
-dotfiles/.config/nvim/temp/*
-dotfiles/.config/nvim/.netrwhist
-dotfiles/.config/cmus/*
-
 dotfiles/.zsh-update
+
+build/

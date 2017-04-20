@@ -1,3 +1,4 @@
+(setq lexical-binding t)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
@@ -17,6 +18,34 @@
 (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                  (org-agenda-files :maxlevel . 9))))
 
+;; playground
+(defun ms-filter-dirs (filelist)
+  (remove-if 'file-directory-p filelist))
+(defun ms-newest-file (dir)
+  (reduce (lambda (accum file)
+            (if (file-newer-than-file-p file accum)
+                file
+              accum))
+          (ms-filter-dirs (directory-files dir t))))
+(defun ms-insert-newest-file (dir)
+    (lambda ()
+      (org-insert-link :link-location (concat "file:"
+                                              (ms-newest-file dir)))))
+
+(defvar lisplike-hooks
+  '(lisp-mode-hook
+    scheme-mode-hook
+    elisp-mode-hook))
+(defun add-hook-to-many-modes (fun hooks)
+  (mapc (lambda (hook)
+          (add-hook hook fun))
+        hooks))
+(add-hook-to-many-modes 'evil-lispy-mode lisplike-hooks)
+
+;;;;;;;;;;;;
+
+(global-set-key (kbd "C-c C-S-l") (ms-insert-newest-file "/home/mds/Downloads"))
+
 ;; Activating stuff
 (which-key-mode 1)
 (ivy-mode 1)
@@ -27,6 +56,7 @@
 (electric-pair-mode)
 
 ;; setting stuff
+(setq scheme-program-name "scm")
 (setq linum-format "%-2d ")
 
 ;; evil stuff
@@ -94,25 +124,33 @@
 (setq parinfer-extensions '(defaults smart-tab pretty-parens evil smart-yank))
 
 ;; org, my love
+(setq org-stuck-projects
+      '("TODO={.+}/-DONE" nil nil "SCHEDULED:\\|DEADLINE:"))
 (setq org-agenda-use-tag-inheritance '(todo search timeline agenda))
 (setq org-journal-file-format "%Y-%m-%d.org")
 (setq org-src-fontify-natively t)
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (add-hook 'org-mode-hook
           (lambda ()
+            (local-set-key (kbd "C-x C-,") 'org-timestamp-down-day)
+            (local-set-key (kbd "C-x C-.") 'org-timestamp-up-day)
             (org-indent-mode)
             (add-to-list 'org-src-lang-modes '("js" . js2-jsx))
             (local-set-key (kbd "C-c t") 'org-toggle-heading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
-            (setq org-agenda-files '("~/Dropbox/org" "~/Documents/journal"))))
+            (setq org-agenda-files '("~/Dropbox/org/" "~/Documents/journal"))))
 
-(setq org-agenda-custom-commands
-      '(("a" "todAy"
-         ((agenda "" ((org-agenda-ndays 7)))
-          (tags-todo "today")
-          (tags-todo "daily")))))
+(add-hook 'lispy-mode-hook (lambda ()
+                             (setq cursor-type 'box)
+                             (evil-set-cursor-color "pink")
+                             (define-key lispy-mode-map "i" 'special-lispy-flow)))
 
-
+;; format for custom agenda views
+;;(setq org-agenda-custom-commands
+;;      '(("a" "todAy"
+;;         ((agenda "" ((org-agenda-ndays 7)))
+;;          (tags-todo "today")
+;;          (tags-todo "daily")))))
 ;; https://github.com/ternjs/tern/issues/701
 ;; how to correctly enable flycheck in babel source blocks
 (defadvice org-edit-src-code (around set-buffer-file-name activate compile)
@@ -132,7 +170,7 @@
   (delete (assoc (completing-read
                    "VBuff to destroy: "
                    (mapcar 'car ivy--virtual-buffers))
-                  ivy--virtual-buffers)
+                 ivy--virtual-buffers)
           ivy--virtual-buffers))
 
 (defun ms/ivy-kill-buffer-and-virtual ()
@@ -225,13 +263,6 @@
 (add-hook 'js2-jsx-mode-hook #'tern-mode)
 (add-hook 'js2-jsx-mode-hook #'js2-refactor-mode)
 (js2r-add-keybindings-with-prefix "C-@")
-
-(add-hook 'neotree-mode-hook
-          (lambda ()
-            (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
-            (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
-            (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
-            (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)))
 
 (color-theme-initialize)
 (color-theme-charcoal-black)
