@@ -18,6 +18,15 @@
 (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                  (org-agenda-files :maxlevel . 9))))
 
+;; Save all tempfiles in $TMPDIR/emacs$UID/, ty to https://www.emacswiki.org/emacs/AutoSave
+(defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
+(setq backup-directory-alist
+      `((".*" . ,emacs-tmp-dir)))
+(setq auto-save-file-name-transforms
+      `((".*" ,emacs-tmp-dir t)))
+(setq auto-save-list-file-prefix
+      emacs-tmp-dir)
+
 ;; playground
 (defun ms-filter-dirs (filelist)
   (remove-if 'file-directory-p filelist))
@@ -27,6 +36,8 @@
                 file
               accum))
           (ms-filter-dirs (directory-files dir t))))
+
+
 (defun ms-insert-newest-file (dir)
     (lambda ()
       (org-insert-link :link-location (concat "file:"
