@@ -3,6 +3,8 @@
                          ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 
+(load-file ".emacs-cfg/magit.el")
+
 ; fetch the list of packages available 
 (unless package-archive-contents
   (package-refresh-contents))

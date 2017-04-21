@@ -44,8 +44,7 @@
  '(lispy-cursor-face ((t (:background "white" :foreground "black")))))
 
 (load-file "~/.emacs-init.el")
+
 (defvar local-el "~/.emacs-local.el")
 (if (file-exists-p local-el)
     (load-file local-el))
-
-()
