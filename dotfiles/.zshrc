@@ -49,7 +49,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git taskwarrior)
+plugins=(git)
 
 # User configuration
 
@@ -81,12 +81,13 @@ source $ZSH/oh-my-zsh.sh
 #
 alias vim="nvim"
 alias g="git"
-alias next="cd ~/Repos/disqus/next"
-alias dw="cd ~/Repos/disqus/disqus"
 # this should be a script, not an alias. and plz create init script to get env
 alias dotfiles="STWCFG_TARGET=arch zsh ~/stow_config/build.zsh"
+alias pz="sudo -p \"What's the secret password? \""
+alias plz="sudo -p \"What's the secret password? \""
 export PATH=$PATH:$HOME/bin:/Library/TeX/texbin/
-export EDITOR=nvim
+export EDITOR=emacsclient
 PS1='%n%m %~ %(?..[%?] )%# '
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
+[[ -r "/etc/profile.d/fzf.zsh"]] && source /etc/profile.d/fzf.zsh
