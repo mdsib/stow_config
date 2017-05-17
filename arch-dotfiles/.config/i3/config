@@ -1,10 +1,12 @@
 # start some shit
-exec xrandr --output HDMI1 --right-of LVDS1 --output HDMI1 --auto
 
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 0 -5% #decrease sound volume
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute 0 toggle # mute sound
+bindsym XF86Display          exec --no-startup-id bash ~/monitor-swap.sh
+bindsym Pause                exec --no-startup-id bash ~/monitor-swap.sh
+exec xrandr --output HDMI1 --right-of LVDS1 --output HDMI1 --auto
 
 # Sreen brightness controls
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
@@ -27,7 +29,6 @@ assign [class="UXTerm"] 2:shell
 bindsym $mod+z workspace 0:os
 bindsym $mod+x workspace 1:net
 bindsym $mod+c workspace 2:shell
-
 bindsym $mod+Shift+z move window to workspace "0:os"
 bindsym $mod+Shift+x move window to workspace "1:net"
 bindsym $mod+Shift+c move window to workspace "2:shell"
