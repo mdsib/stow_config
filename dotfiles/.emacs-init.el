@@ -28,7 +28,7 @@
 (if (not (file-exists-p emacs-tmp-dir))
     (progn
       (make-directory emacs-tmp-dir t)
-      (set-file-modes emacs-tmp-dir (string-to-number "0644" 8))))
+      (set-file-modes emacs-tmp-dir (string-to-number "0755" 8))))
 (setq backup-directory-alist
       `((".*" . ,emacs-tmp-dir)))
 (setq auto-save-file-name-transforms
