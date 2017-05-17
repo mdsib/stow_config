@@ -18,6 +18,7 @@
  '(evil-lispy-cursor (quote (bar . 2)))
  '(evil-show-paren-range 1)
  '(geiser-active-implementations (quote (guile)))
+ '(help-window-select t)
  '(indent-tabs-mode nil)
  '(ivy-mode t)
  '(ivy-use-virtual-buffers nil)
@@ -27,10 +28,11 @@
  '(org-modules
    (quote
     (org-habit org-w3m org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail)))
+ '(org-src-window-setup (quote current-window))
  '(org-startup-truncated nil)
  '(package-selected-packages
    (quote
-    (emmet-mode simple-httpd cider evil-lispy scheme-complete nodejs-repl org-pomodoro js-comint project-root project-persist find-file-in-project magithub sudo-edit evil-smartparens org-bullets which-key org-journal smart-tabs-mode auctex airline-themes web-mode color-theme json-mode js2-mode company-tern powerline-evil evil counsel ivy)))
+    (markdown-mode quack guile-scheme emmet-mode simple-httpd cider evil-lispy scheme-complete nodejs-repl org-pomodoro js-comint project-root project-persist find-file-in-project magithub sudo-edit evil-smartparens org-bullets which-key org-journal smart-tabs-mode auctex airline-themes web-mode color-theme json-mode js2-mode company-tern powerline-evil evil counsel ivy)))
  '(project-persist-keymap-prefix "P")
  '(project-persist-mode t)
  '(show-paren-mode t)

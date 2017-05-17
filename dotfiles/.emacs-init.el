@@ -3,9 +3,12 @@
                          ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 
-(load-file ".emacs-cfg/magit.el")
+(load-file "~/.emacs-cfg/magit.el")
+(load-file "~/.emacs-cfg/global.el")
+(load-file "~/.emacs-cfg/my-charcoal-black.el")
 
-; fetch the list of packages available 
+
+; fetch the list of packages available
 (unless package-archive-contents
   (package-refresh-contents))
 
@@ -21,7 +24,11 @@
                                  (org-agenda-files :maxlevel . 9))))
 
 ;; Save all tempfiles in $TMPDIR/emacs$UID/, ty to https://www.emacswiki.org/emacs/AutoSave
-(defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
+(defconst emacs-tmp-dir (expand-file-name (format "emacs-%d" (user-uid)) temporary-file-directory))
+(if (not (file-exists-p emacs-tmp-dir))
+    (progn
+      (make-directory emacs-tmp-dir t)
+      (set-file-modes emacs-tmp-dir (string-to-number "0644" 8))))
 (setq backup-directory-alist
       `((".*" . ,emacs-tmp-dir)))
 (setq auto-save-file-name-transforms
@@ -29,7 +36,32 @@
 (setq auto-save-list-file-prefix
       emacs-tmp-dir)
 
+(define-key minibuffer-local-map [f3]
+  (lambda () (interactive) 
+     (insert (buffer-name (window-buffer (minibuffer-selected-window))))))
+
 ;; playground
+(defun ms/scheme-in-other ()
+  (interactive)
+  (delete-other-windows)
+  (split-window-right)
+  (other-window 1)
+  (run-scheme nil)
+  (other-window 1))
+(defun ms/run-scheme-def ()
+  (interactive)
+  (ms/scheme-in-other)
+  (scheme-send-definition))
+(defun ms/run-scheme-buffer ()
+  (interactive)
+  (ms/scheme-in-other)
+  (save-excursion
+    (scheme-send-region 1 (point-max))))
+(add-hook 'scheme-mode-hook (lambda ()
+                              (message "enter scheme mode")
+                              (local-set-key (kbd "C-M-x") 'ms/run-scheme-def)
+                              (local-set-key (kbd "C-M-r") 'ms/run-scheme-buffer)))
+
 (defun ms-filter-dirs (filelist)
   (remove-if 'file-directory-p filelist))
 (defun ms-newest-file (dir)
@@ -45,15 +77,20 @@
       (org-insert-link :link-location (concat "file:"
                                               (ms-newest-file dir)))))
 
-(defvar lisplike-hooks
-  '(lisp-mode-hook
-    scheme-mode-hook
-    elisp-mode-hook))
 (defun add-hook-to-many-modes (fun hooks)
   (mapc (lambda (hook)
           (add-hook hook fun))
         hooks))
+
+(defvar lisplike-hooks
+  '(lisp-mode-hook
+    scheme-mode-hook
+    elisp-mode-hook))
 (add-hook-to-many-modes 'evil-lispy-mode lisplike-hooks)
+
+(defvar textlike-hooks
+  '(org-mode-hook))
+(add-hook-to-many-modes 'visual-line-mode textlike-hooks)
 
 ;;;;;;;;;;;;
 
@@ -77,6 +114,8 @@
   evil-normal-state-map
   (kbd "Y")
   'evil-yank-line)
+(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
 
 ;; global bindings for sanity
 (define-prefix-command 'c-dub)
@@ -145,9 +184,9 @@
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (add-hook 'org-mode-hook
           (lambda ()
+            (org-indent-mode)
             (local-set-key (kbd "C-x C-,") 'org-timestamp-down-day)
             (local-set-key (kbd "C-x C-.") 'org-timestamp-up-day)
-            (org-indent-mode)
             (add-to-list 'org-src-lang-modes '("js" . js2-jsx))
             (local-set-key (kbd "C-c t") 'org-toggle-heading)
             (local-set-key (kbd "C-c p") 'org-pomodoro)
@@ -210,7 +249,7 @@
                 (remove-if-not
                  (lambda (item) (directory-name-p (bookmark-get-filename item)))
                  (bookmark-all-names)))))
-        (prev-ffip-project-root ffip-project-root))
+        (prev-ffip-project-root (if (boundp 'ffip-project-root) ffip-project-root "")))
     (cond
      ((eq nil loc) (message "no project, sry"))
      ((equal loc ms/pr-str) (ffip))
@@ -278,8 +317,7 @@
 (js2r-add-keybindings-with-prefix "C-@")
 
 (color-theme-initialize)
-(color-theme-charcoal-black)
+(color-theme-alt-charcoal)
 
 (require 'airline-themes)
 (load-theme 'airline-cool)
-
