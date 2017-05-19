@@ -25,6 +25,7 @@
  '(js2-bounce-indent-p t)
  '(js2r-prefered-quote-type 1)
  '(org-agenda-files nil)
+ '(org-hide-emphasis-markers t)
  '(org-modules
    (quote
     (org-habit org-w3m org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail)))
