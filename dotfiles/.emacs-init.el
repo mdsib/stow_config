@@ -6,6 +6,7 @@
 (load-file "~/.emacs-cfg/magit.el")
 (load-file "~/.emacs-cfg/global.el")
 (load-file "~/.emacs-cfg/my-charcoal-black.el")
+(load-file "~/.emacs-cfg/org-terms.el")
 
 
 ; fetch the list of packages available
@@ -184,6 +185,7 @@
 (add-hook 'org-mode-hook 'org-bullets-mode)
 (add-hook 'org-mode-hook
           (lambda ()
+            (org-term/jank-activate-modeish-thing)
             (org-indent-mode)
             (local-set-key (kbd "C-x C-,") 'org-timestamp-down-day)
             (local-set-key (kbd "C-x C-.") 'org-timestamp-up-day)
