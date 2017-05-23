@@ -3,7 +3,6 @@ set undofile           " keep an undo file (undo changes after closing)
 set ruler              " show the cursor position all the time
 set showcmd            " display incomplete commands
 
-
 " Don't use Ex mode, use Q for formatting
 " noremap Q gq
 

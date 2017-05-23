@@ -90,4 +90,4 @@ export EDITOR=emacsclient
 PS1='%n%m %~ %(?..[%?] )%# '
 
 [[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
-[[ -r "/etc/profile.d/fzf.zsh"]] && source /etc/profile.d/fzf.zsh
+. /etc/profile.d/fzf.zsh
