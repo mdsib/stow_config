@@ -1,4 +1,3 @@
-(setq lexical-binding t)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("marmalade" . "https://marmalade-repo.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
@@ -7,6 +6,8 @@
 (load-file "~/.emacs-cfg/global.el")
 (load-file "~/.emacs-cfg/my-charcoal-black.el")
 (load-file "~/.emacs-cfg/org-terms.el")
+
+(setq lexical-binding t)
 
 
 ; fetch the list of packages available

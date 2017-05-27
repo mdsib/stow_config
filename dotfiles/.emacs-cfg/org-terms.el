@@ -1,5 +1,5 @@
+;; TODO: fontify region or page only if defs have changed.
 (defvar org-term/def-regex "\\<\\(def\\*\\)\\([^\\*]+\\)\\(\\*\\)")
-(defvar org-term/def-list '())
 (defvar org-term/last-keyword '())
 
 (defface org-term/definition-face '((t . (:background "#888" :foreground "black" :bold t)))
@@ -15,7 +15,17 @@
                           (2 '(face org-term/definition-face))
                           (3 '(face org-term/definition-face invisible t)))))
   (setq font-lock-extra-managed-props '(invisible))
+  (org-term/apply-terms)
   (font-lock-fontify-buffer))
+
+(defun org-term/usage-re-builder (terms)
+  "Build usage regex out of 1 or more terms."
+  (let ((term-regex (if (listp terms)
+                        (string-join (mapcar 'regexp-quote terms) "\\|")
+                      (regexp-quote terms))))
+    (concat "\\(^\\|[^[:alpha:]\\*]\\)\\*?\\<\\("
+            term-regex
+            "\\)\\>")))
 
 (defun org-term/formatted-occur (str)
   "Apply our beautiful font lock stuff to the occur buffer."
@@ -25,12 +35,16 @@
     (switch-to-buffer "*Occur*")
     (org-term/configure-font-lock)))
 
+(defun org-term/formatted-occur (str)
+  (org-occur str))
+
 ;; TODO: rework with new representation for usage
 (defun org-term/def-or-term-from-line (&optional point)
-  "Gets definition namie from line that the point or current point is in."
+  "Gets definition name from line that the point or current point is in."
   (interactive)
   (save-excursion
     (beginning-of-line)
+    (cond ((re-search-forward)))
     (if (re-search-forward org-term/defortermregex (line-end-position) t)
         (match-string 2)
       "")))
@@ -46,31 +60,32 @@
 (defun org-term/show-defs ()
   "Shows all defs in document"
   (interactive)
-  (org-term/formatted-occur org-term/defregex))
+  (org-term/formatted-occur org-term/def-regex))
 
 ;; TODO: rework with new representation for usage
 (defun org-term/all-occurances ()
   "Shows def and all usage of a term"
   (interactive)
-  (org-term/formatted-occur (concat "\\(term\\|def\\)\\*"
-                 (regexp-quote (org-term/def-or-term-from-line))
-                 "\\*")))
+  (org-term/formatted-occur (concat "def\\*"
+                                    (regexp-quote (org-term/def-or-term-from-line))
+                                    "\\*")))
 
 (defun org-term/jank-activate-modeish-thing ()
   "A probably temporary way to get this org-term into mode hooks"
+  (interactive)
   (org-term/configure-font-lock)
-  (add-hook 'post-command-hook 'org-term/apply-terms))
+  (add-hook 'before-change-functions (lambda (&rest args) (org-term/apply-terms))))
 
 (defun org-term/change-usage-keywords (exps)
-  (let ((kword `((,(concat "\\(^\\|[[:blank:]]\\)\\*?"
-                           "\\<\\("
-                           (string-join (mapcar 'regexp-quote exps) "\\|")
-                           "\\)\\>")
-                  (2 'org-term/usage-face)))))
-    (font-lock-add-keywords nil kword)
-    (if (not (equalp org-term/last-keyword kword))
-        (org-term/unset-keywords))
-    (setq org-term/last-keyword kword)))
+  (if (null exps)
+      (org-term/unset-keywords)
+    (let ((kword `(( ,(org-term/usage-re-builder exps)
+                     (2 'org-term/usage-face)))))
+      (if (not (equal org-term/last-keyword kword))
+          (progn
+            (org-term/unset-keywords)
+            (font-lock-add-keywords nil kword)
+            (setq org-term/last-keyword kword))))))
 
 (defun org-term/unset-keywords ()
   (if (not (equalp 'org-term/last-keyword nil))
@@ -80,12 +95,11 @@
 
 (defun org-term/apply-terms ()
   (interactive)
-  (let ((new-defs '()))
-    (save-excursion
-      (beginning-of-buffer)
-      (while (re-search-forward org-term/def-regex nil t)
-        (add-to-list 'new-defs (match-string-no-properties 2))))
-    (if (null new-defs)
-        (org-term/unset-keywords)
-      (org-term/change-usage-keywords new-defs)))
-  (font-lock-fontify-buffer))
+  (setq case-fold-search t)
+  (setq new-defs '())
+  (save-excursion
+    ;; TODO: new-defs might not be doing the right thing, cuz last-keyword is always nil. investigate this shit. because of this, old definitions won't go away.
+    (goto-char (point-min))
+    (while (re-search-forward org-term/def-regex nil t)
+      (add-to-list 'new-defs (match-string-no-properties 2)))
+    (org-term/change-usage-keywords new-defs)))
