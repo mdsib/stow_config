@@ -85,7 +85,7 @@ alias g="git"
 alias dotfiles="STWCFG_TARGET=arch zsh ~/stow_config/build.zsh"
 alias pz="sudo -p \"What's the secret password? \""
 alias plz="sudo -p \"What's the secret password? \""
-export PATH=$PATH:$HOME/bin:/Library/TeX/texbin/
+export PATH=$PATH:$HOME/bin:/Library/TeX/texbin/:/opt/clojurescript/bin
 export EDITOR=emacsclient
 PS1='%n%m %~ %(?..[%?] )%# '
 

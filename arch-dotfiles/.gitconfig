@@ -13,4 +13,5 @@
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	apply-gitignore = !git ls-files -ci --exclude-standard -z | xargs -0 git rm --cached
 [commit]
-	gpgsign = true
+[gpg]
+	program = gpg2

@@ -7,6 +7,8 @@ bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute 0 toggle #
 bindsym XF86Display          exec --no-startup-id bash ~/monitor-swap.sh #toggle displays via laptop keyboard
 bindsym Pause                exec --no-startup-id bash ~/monitor-swap.sh #toggle displays via ext. keyboard
 bindsym Scroll_Lock          exec --no-startup-id systemctl suspend #sleep compy via ext. keyboard
+bindsym --release $mod+Control+c exec --no-startup-id xdotool key --clearmodifiers XF86Back
+bindsym --release $mod+Control+v exec --no-startup-id xdotool key --clearmodifiers XF86Forward
 exec xrandr --output HDMI1 --right-of LVDS1 --output HDMI1 --auto
 
 # Sreen brightness controls

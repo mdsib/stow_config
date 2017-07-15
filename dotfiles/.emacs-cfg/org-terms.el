@@ -38,16 +38,16 @@
 (defun org-term/formatted-occur (str)
   (org-occur str))
 
-;; TODO: rework with new representation for usage
 (defun org-term/def-or-term-from-line (&optional point)
   "Gets definition name from line that the point or current point is in."
   (interactive)
   (save-excursion
-    (beginning-of-line)
-    (cond ((re-search-forward)))
-    (if (re-search-forward org-term/defortermregex (line-end-position) t)
-        (match-string 2)
-      "")))
+    (save-match-data
+      (beginning-of-line)
+      (cond ((re-search-forward)))
+      (if (re-search-forward org-term/defortermregex (line-end-position) t)
+          (match-string 2)
+        ""))))
 
 ;; TODO: rework with new representation for usage
 (defun org-term/usage-occurances ()
@@ -70,12 +70,6 @@
                                     (regexp-quote (org-term/def-or-term-from-line))
                                     "\\*")))
 
-(defun org-term/jank-activate-modeish-thing ()
-  "A probably temporary way to get this org-term into mode hooks"
-  (interactive)
-  (org-term/configure-font-lock)
-  (add-hook 'before-change-functions (lambda (&rest args) (org-term/apply-terms))))
-
 (defun org-term/change-usage-keywords (exps)
   (if (null exps)
       (org-term/unset-keywords)
@@ -93,13 +87,21 @@
         (font-lock-remove-keywords nil org-term/last-keyword)
         (setq org-term/last-keyword nil))))
 
-(defun org-term/apply-terms ()
+;throw away args from before change functions call
+(defun org-term/apply-terms (&rest args)
   (interactive)
   (setq case-fold-search t)
   (setq new-defs '())
   (save-excursion
-    ;; TODO: new-defs might not be doing the right thing, cuz last-keyword is always nil. investigate this shit. because of this, old definitions won't go away.
-    (goto-char (point-min))
-    (while (re-search-forward org-term/def-regex nil t)
-      (add-to-list 'new-defs (match-string-no-properties 2)))
-    (org-term/change-usage-keywords new-defs)))
+    (save-match-data
+      ;; TODO: new-defs might not be doing the right thing, cuz last-keyword is always nil. investigate this shit. because of this, old definitions won't go away.
+      (goto-char (point-min))
+      (while (re-search-forward org-term/def-regex nil t)
+        (add-to-list 'new-defs (match-string-no-properties 2)))
+      (org-term/change-usage-keywords new-defs))))
+
+(defun org-term/jank-activate-modeish-thing ()
+  "A probably temporary way to get this org-term into mode hooks"
+  (interactive)
+  (org-term/configure-font-lock)
+  (add-hook 'before-change-functions org-term/apply-terms))
