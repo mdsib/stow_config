@@ -1,6 +1,10 @@
 ;; https://melpa.org/#/js2-mode told me to do this
-(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
-(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
+
+;this is how it was, then i changed it. hmm.
+;(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
+
+(add-to-list 'auto-mode-alist '("\\.jsx?" . web-mode))
+(add-to-list 'interpreter-mode-alist '("node" . web-mode))
 
 
 ;; from http://company-mode.github.io/
@@ -14,4 +18,17 @@
                                (js2-refactor-mode)))
 (add-hook 'js2-jsx-mode-hook #'tern-mode)
 (add-hook 'js2-jsx-mode-hook #'js2-refactor-mode)
-(js2r-add-keybindings-with-prefix "C-@")
+
+;(js2r-add-keybindings-with-prefix "C-@")
+
+(add-hook 'web-mode-hook #'tern-mode)
+
+;; (defadvice web-mode-highlight-part (around tweak-jsx activate)
+;;   (if (or (equal web-mode-content-type "javascript") (equal web-mode-content-type "jsx"))
+;;       (let ((web-mode-enable-part-face nil))
+;;         ad-do-it)
+;;     ad-do-it))
+
+(setq web-mode-extra-snippets
+      '(("js" . (("preact-base" .
+                  "import { h, Component} from 'preact';\n\nclass | extends Component {\n}")))))

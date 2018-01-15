@@ -17,18 +17,20 @@
  '(custom-safe-themes
    (quote
     ("251348dcb797a6ea63bbfe3be4951728e085ac08eee83def071e4d2e3211acc3" default)))
+ '(erc-accidental-paste-threshold-seconds 3.0)
  '(evil-lispy-cursor (quote (bar . 2)))
  '(evil-show-paren-range 1)
  '(geiser-active-implementations (quote (guile)))
  '(geiser-debug-jump-to-debug-p nil)
- '(help-window-select t)
  '(indent-tabs-mode nil)
  '(ivy-mode t)
  '(ivy-use-virtual-buffers nil)
  '(js2-bounce-indent-p t)
  '(js2r-prefered-quote-type 1)
  '(org-agenda-files nil)
+ '(org-default-priority 68)
  '(org-hide-emphasis-markers t)
+ '(org-lowest-priority 68)
  '(org-modules
    (quote
     (org-habit org-w3m org-bbdb org-bibtex org-docview org-gnus org-info org-irc org-mhe org-rmail)))
@@ -36,14 +38,17 @@
  '(org-startup-truncated nil)
  '(package-selected-packages
    (quote
-    (git-gutter+ dired+ rainbow-blocks highlight-symbol geiser markdown-mode quack guile-scheme emmet-mode simple-httpd cider evil-lispy scheme-complete nodejs-repl org-pomodoro js-comint project-root project-persist find-file-in-project magithub sudo-edit evil-smartparens org-bullets which-key org-journal smart-tabs-mode auctex airline-themes web-mode color-theme json-mode js2-mode company-tern powerline-evil evil counsel ivy)))
+    (emms counsel-dash rust-mode git-gutter+ dired+ rainbow-blocks highlight-symbol geiser markdown-mode quack guile-scheme emmet-mode simple-httpd cider scheme-complete nodejs-repl org-pomodoro js-comint project-root project-persist find-file-in-project magithub sudo-edit evil-smartparens org-bullets which-key org-journal smart-tabs-mode auctex airline-themes web-mode color-theme json-mode js2-mode company-tern powerline-evil evil counsel ivy)))
  '(project-persist-keymap-prefix "P")
  '(project-persist-mode t)
  '(show-paren-mode t)
  '(tab-width 4)
  '(tool-bar-mode nil)
  '(whitespace-action (quote (auto-cleanup)) t)
- '(xterm-mouse-mode t))
+ '(xterm-mouse-mode t)
+ '(yas-snippet-dirs
+   (quote
+    ("/home/mds/.emacs-cfg/snippets" yas-installed-snippets-dir))))
 ;;(custom-set-faces
 ;; ;; custom-set-faces was added by Custom.
 ;; ;; If you edit it by hand, you could mess it up, so be careful.

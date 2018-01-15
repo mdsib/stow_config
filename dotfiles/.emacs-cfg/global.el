@@ -19,8 +19,8 @@
 (global-set-key (kbd "C-x a") 'org-agenda)
 
 ;emacs functionality settings
-(setq split-height-threshold nil)
-(setq split-width-threshold 0)
+;(setq split-height-threshold nil)
+;(setq split-width-threshold 0)
 (setq whitespace-action '(auto-cleanup))
 
 (define-key minibuffer-local-map [f3]

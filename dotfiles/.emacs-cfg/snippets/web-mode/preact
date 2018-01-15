@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: preactbase
+# key: preact
+# --
+import { h, Component} from 'preact';
+
+export default class $0 extends Component {
+
+}

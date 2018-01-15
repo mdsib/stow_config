@@ -24,6 +24,6 @@
                                               (ms/newest-file ms/dir))))
 (defun ms/newest-file-org-hook ()
   (local-set-key ms/key
-                 ms/insert-newest-file))
+                 'ms/insert-newest-file-org))
 
-(add-to-list 'org-mode-hook 'ms-org/newest-file-org-hook)
+(add-to-list 'org-mode-hook 'ms/newest-file-org-hook)

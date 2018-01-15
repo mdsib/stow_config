@@ -5,7 +5,6 @@ for the current buffer's file name, and the line number at point."
   (kill-new
    (format "%s::%d" (buffer-file-name) (save-restriction
                                         (widen) (line-number-at-pos)))))
-
 ;;; MY FUNCS
 ;;;;;;;;;;;;;;;;;;
 
@@ -31,6 +30,7 @@ for the current buffer's file name, and the line number at point."
     (if vbuff
         (delete vbuff ivy--virtual-buffers))))
 
+(require 'bookmark)
 (defvar ms/pr-str "__PROJECT_ROOT__")
 (defvar ms/dar-str "__DIR_AS_ROOT__")
 (defun ms/ffib ()
@@ -39,7 +39,7 @@ for the current buffer's file name, and the line number at point."
                "Pick dir to fuzzy find from: "
                (append
                 `(,ms/pr-str)
-                (remove-if-not
+                (cl-remove-if-not
                  (lambda (item) (directory-name-p (bookmark-get-filename item)))
                  (bookmark-all-names)))))
         (prev-ffip-project-root (if (boundp 'ffip-project-root) ffip-project-root "")))

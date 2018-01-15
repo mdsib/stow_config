@@ -2,8 +2,9 @@
 
 ;refiling
 (setq org-default-notes-file "~/Dropbox/org/refile.org")
-(setq org-refile-targets '((nil :maxlevel . 9)
-                          (org-agenda-files :maxlevel . 9)))
+(setq org-refile-targets '(("~/Dropbox/org/todo.org" :maxlevel . 2)))
+(setq org-refile-use-outline-path nil)
+(setq org-outline-path-complete-in-steps t)
 ;capturing
 (setq org-capture-templates
       '(("T" "todo at point" entry (file+headline "" "Todo")
@@ -20,7 +21,7 @@
 
 ;agenda
 (setq org-stuck-projects
-      '("TODO={.+}/-DONE" "DONE" nil "SCHEDULED:\\|DEADLINE:"))
+      '("TODO={.+}/-DONE" () nil "SCHEDULED:\\|DEADLINE:"))
 (setq org-agenda-use-tag-inheritance '(todo search timeline agenda))
 (setq org-agenda-files '("~/Dropbox/org/" "~/Documents/journal"))
 (setq org-agenda-custom-commands
@@ -45,7 +46,7 @@
           (lambda ()
             ;minor modes
             (org-bullets-mode t)
-            (org-indent-mode t)
+            (org-indent-mode)
             (org-term/jank-activate-modeish-thing)
             ;local bindings
             (local-set-key (kbd "C-x C-,") 'org-timestamp-down-day)

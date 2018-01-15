@@ -1,4 +1,7 @@
-# start some shit
+# start some shit. Why here? Why not? Dunno.
+exec xmodmap ~/.modmap-esc
+exec xrdb ~/.Xresources
+exec xrandr --output HDMI1 --right-of LVDS1 --output HDMI1 --auto
 
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume
@@ -9,7 +12,6 @@ bindsym Pause                exec --no-startup-id bash ~/monitor-swap.sh #toggle
 bindsym Scroll_Lock          exec --no-startup-id systemctl suspend #sleep compy via ext. keyboard
 bindsym --release $mod+Control+c exec --no-startup-id xdotool key --clearmodifiers XF86Back
 bindsym --release $mod+Control+v exec --no-startup-id xdotool key --clearmodifiers XF86Forward
-exec xrandr --output HDMI1 --right-of LVDS1 --output HDMI1 --auto
 
 # Sreen brightness controls
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
@@ -25,14 +27,15 @@ bindsym $mod+space focus output right
 bindsym $mod+Shift+a move workspace to output right
 
 # important SHIT
-assign [class="Emacs"] 0:os
+assign [class="Emacs"] 0:emacs
 assign [class="Firefox"] 1:net
+assign [class="Chromium"] 1:net
 assign [class="UXTerm"] 2:shell
 
-bindsym $mod+z workspace 0:os
+bindsym $mod+z workspace 0:emacs
 bindsym $mod+x workspace 1:net
 bindsym $mod+c workspace 2:shell
-bindsym $mod+Shift+z move window to workspace "0:os"
+bindsym $mod+Shift+z move window to workspace "0:emacs"
 bindsym $mod+Shift+x move window to workspace "1:net"
 bindsym $mod+Shift+c move window to workspace "2:shell"
 
@@ -122,6 +125,9 @@ bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
+
+#toggle global fullscreen
+bindsym $mod+Shift+f fullscreen toggle global
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+u layout stacking

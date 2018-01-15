@@ -82,7 +82,7 @@
             (setq org-term/last-keyword kword))))))
 
 (defun org-term/unset-keywords ()
-  (if (not (equalp 'org-term/last-keyword nil))
+  (if (not (cl-equalp 'org-term/last-keyword nil))
       (progn
         (font-lock-remove-keywords nil org-term/last-keyword)
         (setq org-term/last-keyword nil))))
@@ -104,4 +104,4 @@
   "A probably temporary way to get this org-term into mode hooks"
   (interactive)
   (org-term/configure-font-lock)
-  (add-hook 'before-change-functions org-term/apply-terms))
+  (add-hook 'before-change-functions 'org-term/apply-terms))
