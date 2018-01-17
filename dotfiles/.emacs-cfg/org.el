@@ -1,8 +1,8 @@
 ;;; org, my lovely love
 
 ;refiling
-(setq org-default-notes-file "~/Dropbox/org/refile.org")
-(setq org-refile-targets '(("~/Dropbox/org/todo.org" :maxlevel . 2)))
+(setq org-default-notes-file "~/org/refile.org")
+(setq org-refile-targets '(("~/org/todo.org" :maxlevel . 2)))
 (setq org-refile-use-outline-path nil)
 (setq org-outline-path-complete-in-steps t)
 ;capturing
@@ -17,13 +17,14 @@
 (add-hook 'org-capture-mode-hook 'evil-insert-state)
 
 ;journal
-(setq org-journal-file-format "%Y-%m-%d.org")
+(setq org-journal-file-format "%Y-%m-%d.org"
+      org-journal-dir "~/org/journal")
 
 ;agenda
 (setq org-stuck-projects
       '("TODO={.+}/-DONE" () nil "SCHEDULED:\\|DEADLINE:"))
 (setq org-agenda-use-tag-inheritance '(todo search timeline agenda))
-(setq org-agenda-files '("~/Dropbox/org/" "~/Documents/journal"))
+(setq org-agenda-files '("~/org/" "~/org/journal"))
 (setq org-agenda-custom-commands
       '(("z" "today"
          ((agenda "" ((org-agenda-ndays 7)))
