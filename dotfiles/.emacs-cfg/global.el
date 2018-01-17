@@ -29,20 +29,3 @@
 
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "firefox-developer")
-
-;; Save all tempfiles in $TMPDIR/emacs$UID/
-;; ty to https://www.emacswiki.org/emacs/AutoSave
-
-(defconst emacs-tmp-dir (expand-file-name (format "emacs-%d" (user-uid))
-                                          temporary-file-directory))
-(if (not (file-exists-p emacs-tmp-dir))
-    (progn
-      (make-directory emacs-tmp-dir t)
-      (set-file-modes emacs-tmp-dir (string-to-number "0755" 8))))
-(setq backup-directory-aist
-      `((".*" . ,emacs-tmp-dir)))
-(setq auto-save-file-name-transforms
-      `((".*" ,emacs-tmp-dir t)))
-(setq auto-save-list-file-prefix
-      emacs-tmp-dir)
-
