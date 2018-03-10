@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: ref
+# key: ref
+# --
+
+ref={(ref) => {this.$1Ref = ref}}

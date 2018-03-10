@@ -24,7 +24,7 @@ bindsym $mod+Tab workspace back_and_forth
 bindsym $mod+space focus output right
 
 # move workspace to other output
-bindsym $mod+Shift+a move workspace to output right
+bindsym $mod+Shift+a move workspace to output up; move workspace to output right;
 
 # important SHIT
 assign [class="Emacs"] 0:emacs

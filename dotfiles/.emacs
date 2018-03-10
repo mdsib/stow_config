@@ -18,6 +18,25 @@
    (quote
     ("251348dcb797a6ea63bbfe3be4951728e085ac08eee83def071e4d2e3211acc3" default)))
  '(erc-accidental-paste-threshold-seconds 3.0)
+ '(erc-autojoin-mode t)
+ '(erc-button-mode t)
+ '(erc-fill-mode t)
+ '(erc-irccontrols-mode t)
+ '(erc-list-mode t)
+ '(erc-match-mode t)
+ '(erc-menu-mode t)
+ '(erc-modules
+   (quote
+    (autojoin button completion fill irccontrols list match menu move-to-prompt netsplit networks noncommands readonly ring scrolltobottom stamp track)))
+ '(erc-move-to-prompt-mode t)
+ '(erc-netsplit-mode t)
+ '(erc-networks-mode t)
+ '(erc-noncommands-mode t)
+ '(erc-pcomplete-mode t)
+ '(erc-readonly-mode t)
+ '(erc-ring-mode t)
+ '(erc-stamp-mode t)
+ '(erc-track-mode t)
  '(evil-lispy-cursor (quote (bar . 2)))
  '(evil-show-paren-range 1)
  '(geiser-active-implementations (quote (guile)))
@@ -38,17 +57,14 @@
  '(org-startup-truncated nil)
  '(package-selected-packages
    (quote
-    (emms counsel-dash rust-mode git-gutter+ dired+ rainbow-blocks highlight-symbol geiser markdown-mode quack guile-scheme emmet-mode simple-httpd cider scheme-complete nodejs-repl org-pomodoro js-comint project-root project-persist find-file-in-project magithub sudo-edit evil-smartparens org-bullets which-key org-journal smart-tabs-mode auctex airline-themes web-mode color-theme json-mode js2-mode company-tern powerline-evil evil counsel ivy)))
+    (exec-path-from-shell evil-surround wrap-region evil-lispy unicode-fonts yasnippet emms counsel-dash rust-mode git-gutter+ dired+ rainbow-blocks highlight-symbol geiser markdown-mode quack guile-scheme emmet-mode simple-httpd cider scheme-complete nodejs-repl org-pomodoro js-comint project-root project-persist find-file-in-project magithub sudo-edit evil-smartparens org-bullets which-key org-journal smart-tabs-mode auctex airline-themes web-mode color-theme json-mode js2-mode company-tern powerline-evil evil counsel ivy)))
  '(project-persist-keymap-prefix "P")
  '(project-persist-mode t)
  '(show-paren-mode t)
  '(tab-width 4)
  '(tool-bar-mode nil)
- '(whitespace-action (quote (auto-cleanup)) t)
- '(xterm-mouse-mode t)
- '(yas-snippet-dirs
-   (quote
-    ("/home/mds/.emacs-cfg/snippets" yas-installed-snippets-dir))))
+ '(whitespace-action (quote (auto-cleanup)))
+ '(xterm-mouse-mode t))
 ;;(custom-set-faces
 ;; ;; custom-set-faces was added by Custom.
 ;; ;; If you edit it by hand, you could mess it up, so be careful.
@@ -66,6 +82,7 @@
 (defvar local-el "~/.emacs-local.el")
 (if (file-exists-p local-el)
     (load-file local-el))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

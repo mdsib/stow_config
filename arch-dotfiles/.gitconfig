@@ -1,6 +1,6 @@
 [user]
 	name = Massimo Siboldi
-	email = massimo@disqus.com
+	email = mdsiboldi@gmail.com
 [alias]
 	dc = diff --cached
 	aa = add -A
@@ -15,3 +15,5 @@
 [commit]
 [gpg]
 	program = gpg2
+[github]
+	user = mdsib

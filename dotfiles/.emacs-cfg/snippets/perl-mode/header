@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: header
+# key: header
+# --
+#!/usr/bin/env perl
+use 5.016;      # implies "use strict;"
+use warnings;
+use autodie;

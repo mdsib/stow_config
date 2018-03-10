@@ -7,16 +7,38 @@
 (global-set-key (kbd "C-x C-g") 'magit-dispatch-popup)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-(define-prefix-command 'ol-space)
-;spc = @ in iterm vs standalone
-(global-set-key (kbd "C-SPC") 'ol-space)
-(global-set-key (kbd "C-@") 'ol-space)
-(global-set-key (kbd "C-@ C-@") 'set-mark-command)
-(global-set-key (kbd "C-@ C-SPC") 'set-mark-command)
+(define-prefix-command 'my-magit)
+(global-set-key (kbd "C-c g") 'my-magit)
+(global-set-key (kbd "C-c g n") 'magit-blob-next)
+(global-set-key (kbd "C-c g p") 'magit-blob-previous)
+(global-set-key (kbd "C-c g i") 'magit-init)
 
 ;exposing org to the world
 (global-set-key (kbd "C-x c") 'org-capture)
 (global-set-key (kbd "C-x a") 'org-agenda)
+(global-set-key (kbd "C-c j") 'org-journal-new-entry)
+
+;etc
+(global-set-key (kbd "C-c f") 'find-grep-dired)
+
+(define-prefix-command 'my-erc)
+(global-set-key (kbd "C-c e") 'my-erc)
+(define-prefix-command 'my-znc)
+(global-set-key (kbd "C-c e z") 'my-znc)
+(global-set-key (kbd "C-c e z l") (lambda () (interactive)
+                                    (erc-tls :server "luv2serve-local"
+                                             :port "5000"
+                                             :nick "mduggie"
+                                             :password (read-passwd "znc passphrase: "))))
+
+(global-set-key (kbd "C-c e z r") (lambda () (interactive)
+                                    (erc-tls :server "luv2serve-remote"
+                                             :port "5000"
+                                             :nick "mduggie"
+                                             :password (read-passwd "znc passphrase: "))))
+
+(setq erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
+(setq erc-lurker-threshold-time 3600)
 
 ;emacs functionality settings
 ;(setq split-height-threshold nil)
@@ -24,8 +46,8 @@
 (setq whitespace-action '(auto-cleanup))
 
 (define-key minibuffer-local-map [f3]
-  (lambda () (interactive) 
+  (lambda () (interactive)
      (insert (buffer-name (window-buffer (minibuffer-selected-window))))))
 
 (setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "firefox-developer")
+      browse-url-generic-program "xdg-open")

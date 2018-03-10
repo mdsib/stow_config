@@ -1,3 +1,4 @@
+(require 'evil-lispy)
 ;global evil-mode for now
 (evil-mode t)
 

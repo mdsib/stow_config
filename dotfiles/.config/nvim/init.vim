@@ -317,5 +317,4 @@ endf
 command! -nargs=* Btodo call BranchTodos(<f-args>)
 
 set foldmethod=indent
-set foldlevelstart=1
 set foldnestmax=10

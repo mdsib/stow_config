@@ -3,8 +3,12 @@
 ;this is how it was, then i changed it. hmm.
 ;(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
 
-(add-to-list 'auto-mode-alist '("\\.jsx?" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx[?]\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
 (add-to-list 'interpreter-mode-alist '("node" . web-mode))
+
+(setq web-mode-content-types-alist
+      '(("jsx"  . "\\.js[x]?\\'")))
 
 
 ;; from http://company-mode.github.io/
@@ -23,12 +27,3 @@
 
 (add-hook 'web-mode-hook #'tern-mode)
 
-;; (defadvice web-mode-highlight-part (around tweak-jsx activate)
-;;   (if (or (equal web-mode-content-type "javascript") (equal web-mode-content-type "jsx"))
-;;       (let ((web-mode-enable-part-face nil))
-;;         ad-do-it)
-;;     ad-do-it))
-
-(setq web-mode-extra-snippets
-      '(("js" . (("preact-base" .
-                  "import { h, Component} from 'preact';\n\nclass | extends Component {\n}")))))

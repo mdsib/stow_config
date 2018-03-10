@@ -12,14 +12,16 @@
       (cons r-el (randomize-list (remove r-el lst))))))
 
 (defun print-3 (lst)
-  (print (list (car lst) (cadr lst) (caddr lst))))
+  (print (list (car lst) (cadr lst) (cl-caddr lst))))
 
+(defvar pattern '(a b c d e f g))
+(setq pattern '(1 2 3 4 5 6 7))
 (defun fun-time ()
   (let ((fun-timer nil))
     (lambda (op)
       (cond ((eq op 'start)
              (setq fun-timer
-                  (run-with-timer 0 5 (lambda () (thing '(1 2 3 4 5 6 7) 3)))))
+                  (run-with-timer 0 5 (lambda () (thing pattern 3)))))
             ((eq op 'stop)
              (cancel-timer fun-timer))))))
 

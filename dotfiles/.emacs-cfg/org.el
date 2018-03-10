@@ -27,13 +27,10 @@
 (setq org-agenda-files '("~/org/" "~/org/journal"))
 (setq org-agenda-custom-commands
       '(("z" "today"
-         ((agenda "" ((org-agenda-ndays 7)))
-          (tags-todo "today")
-          (tags-todo "daily")))))
+         ((agenda "" ((org-agenda-ndays 1)))
+          (tags-todo "org_journal")))))
 
 ;(setq org-src-fontify-natively t) ;this seems to not be right, from docs
-
-;code blocks
 
 ; https://github.com/ternjs/tern/issues/701
 ; how to correctly enable flycheck in babel source blocks
