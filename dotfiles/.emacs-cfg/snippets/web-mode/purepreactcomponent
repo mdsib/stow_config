@@ -1,8 +1,0 @@
-# key: purepreactcomponent
-# name: purepreactcomponent
-# --
-import { h } from 'preact';
-
-export default (props) => (
-       $1
-);

@@ -1,0 +1,3 @@
+- to install, run =stow {dotfile-dir-here}= in =/path/to/stow_config=
+- emacs configuration requires [[https://github.com/syl20bnr/spacemacs][spacemacs]] to reside in =~/.emacs.d=.
+- macos dotfiles are probably fairly behind. that's ok.
