@@ -11,11 +11,14 @@ This is another annotated emacs configuration, but this time it's personal.
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (setq whitespace-action '(auto-cleanup))
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
   (define-key minibuffer-local-map [f3]
     (lambda () (interactive)
       (insert (buffer-name (window-buffer (minibuffer-selected-window))))))
+
   (setq browse-url-browser-function 'browse-url-generic
         browse-url-generic-program "xdg-open")
+
   (setq backup-directory-alist '(("." . "~/.emacs.d/private/backup"))
         backup-by-copying t    ; Don't delink hardlinks
         version-control t      ; Use version numbers on backups
@@ -61,16 +64,74 @@ Everything's fine, just have to expose some operations I use. =magit-blob-next= 
         (setq magit-status-mode-hook '(magit-status-mode-funs))
       (add-to-list 'magit-status-mode-hook 'magit-status-mode-funs)))
 #+END_SRC
+* org
+#+BEGIN_SRC emacs-lisp :tangle user-config.el
+  ; refiling
+  (setq org-default-notes-file "~/org/refile.org")
+  (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 2)))
+  (setq org-refile-use-outline-path nil)
+  (setq org-outline-path-complete-in-steps t)
+  ; capturing
+  (setq org-capture-templates
+          ; this one adds a link to the line of the file it's invoked from.
+        '(("T" "todo at point" entry (file+headline "" "Todo")
+           "* TODO %?\n  %u\n  %a")
+          ; this one is just a normal todo
+          ("t"
+            "todo"
+            entry
+            (file+headline org-default-notes-file "Todo")
+            "* TODO %?")))
+
+  ; journal
+  ;
+  (setq org-journal-file-format "%Y-%m-%d.org"
+        org-journal-dir "~/org/journal")
+
+  ; agenda
+  ; put all unscheduled todos in stuck since they don't have a time to be done
+  (setq org-stuck-projects
+        '("TODO={.+}/-DONE" () nil "SCHEDULED:\\|DEADLINE:"))
+  (setq org-agenda-use-tag-inheritance '(todo search timeline agenda))
+  (setq org-agenda-files '("~/org/" "~/org/journal"))
+  (setq org-agenda-custom-commands
+        '(("z" "today"
+           ((agenda "" ((org-agenda-ndays 1)))
+            (tags-todo "org_journal")))))
+
+  ; src blocks: i like them where they are
+  (setq org-src-window-setup 'same-buffer)
+
+  ; the hook
+  (add-hook 'org-mode-hook
+            (lambda ()
+              ; minor modes
+              (org-indent-mode)
+              (org-term/jank-activate-modeish-thing)
+              ; local bindings
+              (local-set-key (kbd "C-x C-,") 'org-timestamp-down-day)
+              (local-set-key (kbd "C-x C-.") 'org-timestamp-up-day)
+              (local-set-key (kbd "C-c t") 'org-toggle-heading)
+              (local-set-key (kbd "C-c p") 'org-pomodoro)))
+#+END_SRC
+** org-term
+This is an extension to org mode that highlights (and will eventually do more interesting things to) definitions and their usages.
+Wrapping a word in =def*= and =*= makes it a definition.
+#+BEGIN_SRC emacs-lisp :tangle user-config.el
+  (load-file (concat dotspacemacs-directory "org-terms.el"))
+#+END_SRC
+*** todo
+- use projectile projects or similar to reference definitions across files
+- make a view where definitions and their usages can be seen together
+- implement function that moves buffer from a usage to its definition
+- fix font color when usages occur on headings
+- figure out how this could be exportable, or find a way to exclude  the =def= part of the definition when exporting.
+- make into actual minor mode or org module
 * web
 #+BEGIN_SRC emacs-lisp :tangle user-config.el
   (add-to-list 'auto-mode-alist '("\\.js\\'" . react-mode))
   (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
 #+END_SRC
-* org-mode
-#+BEGIN_SRC emacs-lisp :tangle user-config.el
-
-#+END_SRC
-
 * erc
 I use erc to connect to znc on a home server.
 #+BEGIN_SRC emacs-lisp :tangle user-config.el
@@ -132,77 +193,14 @@ And sometimes I like to segregate those erc buffers. This does the trick for now
    (spacemacs/set-leader-keys
      "Eb" (lambda () (interactive) (ms/ivy-switch-buffer-with-regex "^[^#]")))
 #+END_SRC
-* org
+* extras
 #+BEGIN_SRC emacs-lisp :tangle user-config.el
-  ; refiling
-  (setq org-default-notes-file "~/org/refile.org")
-  (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 2)))
-  (setq org-refile-use-outline-path nil)
-  (setq org-outline-path-complete-in-steps t)
-  ; capturing
-  (setq org-capture-templates
-          ; this one adds a link to the line of the file it's invoked from.
-        '(("T" "todo at point" entry (file+headline "" "Todo")
-           "* TODO %?\n  %u\n  %a")
-          ; this one is just a normal todo
-          ("t"
-            "todo"
-            entry
-            (file+headline org-default-notes-file "Todo")
-            "* TODO %?")))
+  (defun rgb-to-hex (r g b)
+    (format "#%02X%02X%02X" r g b))
 
-  ; journal
-  ;
-  (setq org-journal-file-format "%Y-%m-%d.org"
-        org-journal-dir "~/org/journal")
-
-  ; agenda
-  ; put all unscheduled todos in stuck since they don't have a time to be done
-  (setq org-stuck-projects
-        '("TODO={.+}/-DONE" () nil "SCHEDULED:\\|DEADLINE:"))
-  (setq org-agenda-use-tag-inheritance '(todo search timeline agenda))
-  (setq org-agenda-files '("~/org/" "~/org/journal"))
-  (setq org-agenda-custom-commands
-        '(("z" "today"
-           ((agenda "" ((org-agenda-ndays 1)))
-            (tags-todo "org_journal")))))
-
-  ; src blocks: i like them where they are
-  (setq org-src-window-setup 'same-buffer)
-
-  ; the hook
-  (add-hook 'org-mode-hook
-            (lambda ()
-              ; minor modes
-              (org-indent-mode)
-              (org-term/jank-activate-modeish-thing)
-              ; local bindings
-              (local-set-key (kbd "C-x C-,") 'org-timestamp-down-day)
-              (local-set-key (kbd "C-x C-.") 'org-timestamp-up-day)
-              (local-set-key (kbd "C-c t") 'org-toggle-heading)
-              (local-set-key (kbd "C-c p") 'org-pomodoro)))
+  (defun hex-to-rgb (hexcode)
+    (format "rgb(%d, %d, %d)"
+            (string-to-int (substring hexcode 1 3) 16)
+            (string-to-int (substring hexcode 3 5) 16)
+            (string-to-int (substring hexcode 5 7) 16)))
 #+END_SRC
-** org-term
-This is an extension to org mode that highlights (and will eventually do more interesting things to) definitions and their usages.
-Wrapping a word in =def*= and =*= makes it a definition.
-*** todo
-**** use projectile projects or similar to reference definitions across files
-**** make a view where definitions and their usages can be seen together
-**** implement function that moves buffer from a usage to its definition
-**** fix font color when usages occur on headings
-**** figure out how this could be exportable, or find a way to exclude  the =def= part of the definition when exporting.
-**** make into actual minor mode or org module
-*** code
-#+BEGIN_SRC emacs-lisp :tangle user-config.el
-  (load-file (concat dotspacemacs-directory "org-terms.el"))
-#+END_SRC
-** extras
-
-(defun rgb-to-hex (r g b)
-(format "#%02X%02X%02X" r g b))
-
-(defun hex-to-rgb (hexcode)
-(format "rgb(%d, %d, %d)"
-(string-to-int (substring hexcode 1 3) 16)
-(string-to-int (substring hexcode 3 5) 16)
-(string-to-int (substring hexcode 5 7) 16)))
