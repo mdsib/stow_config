@@ -8,11 +8,14 @@
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (setq whitespace-action '(auto-cleanup))
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
   (define-key minibuffer-local-map [f3]
     (lambda () (interactive)
       (insert (buffer-name (window-buffer (minibuffer-selected-window))))))
+
   (setq browse-url-browser-function 'browse-url-generic
         browse-url-generic-program "xdg-open")
+
   (setq backup-directory-alist '(("." . "~/.emacs.d/private/backup"))
         backup-by-copying t    ; Don't delink hardlinks
         version-control t      ; Use version numbers on backups
@@ -21,11 +24,15 @@
         kept-old-versions 5)   ; and how many of the old
 
 (define-key
-  evil-normal-state-map
-  (kbd "Y")
-  'evil-yank-line)
-(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
-(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+    evil-normal-state-map
+    (kbd "Y")
+    'evil-yank-line)
+  (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+
+; some modes are better in emacs mode
+(evil-set-initial-state 'magit-status-mode 'emacs)
+(evil-set-initial-state 'org-agenda-mode 'emacs)
 
 (setq yas--default-user-snippets-dir "~/.spacemacs.d/snippets")
 
@@ -50,63 +57,6 @@
   (if (null magit-status-mode-hook)
       (setq magit-status-mode-hook '(magit-status-mode-funs))
     (add-to-list 'magit-status-mode-hook 'magit-status-mode-funs)))
-
-(add-to-list 'auto-mode-alist '("\\.js\\'" . react-mode))
-(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-
-
-
-(setq erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
-(setq erc-lurker-threshold-time 3600)
-
-(defun ms/znc-join (suffix server)
-  (lexical-let ((suffix suffix)
-                (server server))
-    (lambda () (interactive)
-      (erc-tls :server (concat "luv2serve-" suffix)
-               :port "5000"
-               :nick "mduggie"
-               :password (concat "mduggie/" server ":" (read-passwd "pass: "))))))
-
-(spacemacs/declare-prefix "E" "erc")
-(spacemacs/declare-prefix "Ez" "znc")
-
-(spacemacs/set-leader-keys
-  "Ezl" (ms/znc-join "local" "freenode")
-  "Ezr" (ms/znc-join "remote" "freenode"))
-
-(defun ms/ivy-kill-buffer-and-virtual ()
-  (interactive)
-  (let* ((buffer (completing-read
-                "Buffer to kill: "
-                (append (mapcar 'car ivy--virtual-buffers)
-                        (remove nil (mapcar 'buffer-name (buffer-list))))))
-        (vbuff (assoc buffer ivy--virtual-buffers)))
-
-    (if (get-buffer buffer)
-        (kill-buffer buffer))
-    (if vbuff
-        (delete vbuff ivy--virtual-buffers))))
-
-(global-set-key (kbd "C-x M-k") 'ms/ivy-kill-buffer-and-virtual)
-
-(defun ms/ivy-switch-buffer-with-regex (regex)
-  (interactive)
-  (let ((old-ignore-list ivy-ignore-buffers))
-    (progn
-      (setq ivy-ignore-buffers `(,regex))
-      (ivy-switch-buffer)
-      (setq ivy-ignore-buffers old-ignore-list))))
-
-(global-set-key
- (kbd "C-x b")
- (lambda () (interactive) (ms/ivy-switch-buffer-with-regex "#")))
-
-(spacemacs/set-leader-keys
-  "bb" (lambda () (interactive) (ms/ivy-switch-buffer-with-regex "#")))
-
-(spacemacs/set-leader-keys
-  "Eb" (lambda () (interactive) (ms/ivy-switch-buffer-with-regex "^[^#]")))
 
 ; refiling
 (setq org-default-notes-file "~/org/refile.org")
@@ -157,3 +107,68 @@
             (local-set-key (kbd "C-c p") 'org-pomodoro)))
 
 (load-file (concat dotspacemacs-directory "org-terms.el"))
+
+(add-to-list 'auto-mode-alist '("\\.js\\'" . react-mode))
+(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+
+(setq erc-lurker-hide-list '("JOIN" "PART" "QUIT"))
+(setq erc-lurker-threshold-time 3600)
+(setq erc-join-buffer 'bury)
+
+(defun ms/znc-join (suffix server)
+  (lexical-let ((suffix suffix)
+                (server server))
+    (lambda () (interactive)
+      (erc-tls :server (concat "luv2serve-" suffix)
+               :port "5000"
+               :nick "mduggie"
+               :password (concat "mduggie/" server ":" (read-passwd "pass: "))))))
+
+(spacemacs/declare-prefix "E" "erc")
+(spacemacs/declare-prefix "Ez" "znc")
+
+(spacemacs/set-leader-keys
+  "Ezl" (ms/znc-join "local" "freenode")
+  "Ezr" (ms/znc-join "remote" "freenode"))
+
+(defun ms/ivy-kill-buffer-and-virtual ()
+  (interactive)
+  (let* ((buffer (completing-read
+                "Buffer to kill: "
+                (append (mapcar 'car ivy--virtual-buffers)
+                        (remove nil (mapcar 'buffer-name (buffer-list))))))
+        (vbuff (assoc buffer ivy--virtual-buffers)))
+
+    (if (get-buffer buffer)
+        (kill-buffer buffer))
+    (if vbuff
+        (delete vbuff ivy--virtual-buffers))))
+
+(global-set-key (kbd "C-x M-k") 'ms/ivy-kill-buffer-and-virtual)
+
+(defun ms/ivy-switch-buffer-with-regex (regex)
+  (interactive)
+  (let ((old-ignore-list ivy-ignore-buffers))
+    (progn
+      (setq ivy-ignore-buffers `(,regex))
+      (ivy-switch-buffer)
+      (setq ivy-ignore-buffers old-ignore-list))))
+
+(global-set-key
+ (kbd "C-x b")
+ (lambda () (interactive) (ms/ivy-switch-buffer-with-regex "#")))
+
+(spacemacs/set-leader-keys
+  "bb" (lambda () (interactive) (ms/ivy-switch-buffer-with-regex "#")))
+
+(spacemacs/set-leader-keys
+  "Eb" (lambda () (interactive) (ms/ivy-switch-buffer-with-regex "^[^#]")))
+
+(defun rgb-to-hex (r g b)
+  (format "#%02X%02X%02X" r g b))
+
+(defun hex-to-rgb (hexcode)
+  (format "rgb(%d, %d, %d)"
+          (string-to-int (substring hexcode 1 3) 16)
+          (string-to-int (substring hexcode 3 5) 16)
+          (string-to-int (substring hexcode 5 7) 16)))

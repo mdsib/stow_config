@@ -1,0 +1,3 @@
+[submodule "spacemacs-journal"]
+	path = dotfiles/.spacemacs.d/layers/journal
+	url = https://github.com/borgnix/spacemacs-journal
