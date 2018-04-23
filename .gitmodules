@@ -1,3 +1,6 @@
 [submodule "spacemacs-journal"]
 	path = dotfiles/.spacemacs.d/layers/journal
 	url = https://github.com/borgnix/spacemacs-journal
+[submodule "dotfiles/.spacemacs.d/packages/fennel-mode"]
+	path = dotfiles/.spacemacs.d/packages/fennel-mode
+	url = https://gitlab.com/technomancy/fennel-mode

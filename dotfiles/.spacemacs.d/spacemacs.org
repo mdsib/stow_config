@@ -25,6 +25,16 @@ This is another annotated emacs configuration, but this time it's personal.
         delete-old-versions t  ; Automatically delete excess backups
         kept-new-versions 10   ; how many of the newest versions to keep
         kept-old-versions 5)   ; and how many of the old
+
+  ; turning off idle autocomplete
+  (defun ms/company-hook ()
+    (setq company-idle-delay nil)
+    (setq company-minimum-prefix-length 3)
+    (setq tab-always-indent t))
+
+  (add-hook 'company-mode-hook 'ms/company-hook)
+
+  (with-eval-after-load 'company (global-set-key (kbd "C-M-/") 'company-manual-begin))
 #+END_SRC
 * evil
 #+BEGIN_SRC emacs-lisp :tangle user-config.el
@@ -35,9 +45,15 @@ This is another annotated emacs configuration, but this time it's personal.
     (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
     (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
 
-  ; some modes are better in emacs mode
-  (evil-set-initial-state 'magit-status-mode 'emacs)
-  (evil-set-initial-state 'org-agenda-mode 'emacs)
+    ; some modes are better in emacs mode
+
+    (defun ms/org-agenda-hook-fun
+        (evil-set-initial-state 'org-agenda-mode 'emacs))
+    (add-hook 'org-agenda-hook 'ms/org-agenda-hook-fun)
+    (with-eval-after-load 'org-agenda
+      (evil-set-initial-state 'org-agenda-mode 'emacs))
+    (evil-set-initial-state 'magit-status-mode 'emacs)
+    (add-hook 'org-capture-mode-hook 'evil-insert-state)
 #+END_SRC
 * yasnippet
 #+BEGIN_SRC emacs-lisp :tangle user-config.el
@@ -69,54 +85,69 @@ Everything's fine, just have to expose some operations I use. =magit-blob-next= 
       (add-to-list 'magit-status-mode-hook 'magit-status-mode-funs)))
 #+END_SRC
 * org
+#+BEGIN_SRC emacs-lisp :tangle user-init.el
+  ; undoing what spacemacs did...
+  (setq spacemacs-theme-org-agenda-height nil)
+  (setq spacemacs-theme-org-height nil)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp :tangle user-config.el
-  ; refiling
-  (setq org-default-notes-file "~/org/refile.org")
-  (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 2)))
-  (setq org-refile-use-outline-path nil)
-  (setq org-outline-path-complete-in-steps t)
-  ; capturing
-  (setq org-capture-templates
-          ; this one adds a link to the line of the file it's invoked from.
-        '(("T" "todo at point" entry (file+headline "" "Todo")
-           "* TODO %?\n  %u\n  %a")
-          ; this one is just a normal todo
-          ("t"
-            "todo"
-            entry
-            (file+headline org-default-notes-file "Todo")
-            "* TODO %?")))
+  (defun ms/org-capture () (interactive) (org-capture nil "t"))
+  (global-set-key (kbd "C-M-SPC") 'ms/org-capture)
 
-  ; journal
-  ;
-  (setq org-journal-file-format "%Y-%m-%d.org"
-        org-journal-dir "~/org/journal")
+  ; spacemacs defers the org layer.
+  ; its config overrides things outside of with-eval-after-load
+  (with-eval-after-load 'org
+    ; priorities
+    (setq org-highest-priority ?A)
+    (setq org-default-priority ?C)
+    (setq org-lowest-priority ?D)
 
-  ; agenda
-  ; put all unscheduled todos in stuck since they don't have a time to be done
-  (setq org-stuck-projects
-        '("TODO={.+}/-DONE" () nil "SCHEDULED:\\|DEADLINE:"))
-  (setq org-agenda-use-tag-inheritance '(todo search timeline agenda))
-  (setq org-agenda-files '("~/org/" "~/org/journal"))
-  (setq org-agenda-custom-commands
-        '(("z" "today"
-           ((agenda "" ((org-agenda-ndays 1)))
-            (tags-todo "org_journal")))))
+    ; refiling
+    (setq org-default-notes-file "~/org/refile.org")
+    (setq org-refile-targets '(("~/org/todo.org" :maxlevel . 2) ("~/org/someday.org" :level . 1)))
+    (setq org-refile-use-outline-path nil)
+    (setq org-outline-path-complete-in-steps t)
 
-  ; src blocks: i like them where they are
-  (setq org-src-window-setup 'same-buffer)
+    ; capturing
+    (setq org-capture-templates
+          '(("T" "todo at point" entry (file+headline "" "Todo")
+             "* TODO %?\n  %u\n  %a")
+            ("t" "todo" entry (file+headline org-default-notes-file "Todo")
+             "* TODO %?")))
 
-  ; the hook
-  (add-hook 'org-mode-hook
-            (lambda ()
-              ; minor modes
-              (org-indent-mode)
-              (org-term/jank-activate-modeish-thing)
-              ; local bindings
-              (local-set-key (kbd "C-x C-,") 'org-timestamp-down-day)
-              (local-set-key (kbd "C-x C-.") 'org-timestamp-up-day)
-              (local-set-key (kbd "C-c t") 'org-toggle-heading)
-              (local-set-key (kbd "C-c p") 'org-pomodoro)))
+    (setq org-journal-file-format "%Y-%m-%d.org"
+          org-journal-dir "~/org/journal")
+
+    ; agenda
+    ; put all unscheduled todos in stuck since they don't have a time to be done
+    (setq org-stuck-projects
+          '("TODO={.+}/-DONE" () nil "SCHEDULED:\\|DEADLINE:"))
+    (setq org-agenda-use-tag-inheritance '(todo search timeline agenda))
+    (setq org-agenda-files '("~/org/" "~/org/journal"))
+    (setq org-agenda-custom-commands
+          '(("z" "today"
+             ((agenda "" ((org-agenda-ndays 1)))
+              (tags-todo "org_journal")))
+            ("p" "plan"
+             ((agenda "" ((org-agenda-ndays 7)))
+              (stuck "")))))
+
+    ; src blocks: i like them where they are
+    (setq org-src-window-setup 'same-buffer)
+
+    ; the hooks
+    (add-hook 'org-mode-hook
+              (lambda ()
+                ; minor modes
+                (org-indent-mode)
+                (org-term/jank-activate-modeish-thing)
+                ; local bindings
+                (local-set-key (kbd "C-x C-,") 'org-timestamp-down-day)
+                (local-set-key (kbd "C-x C-.") 'org-timestamp-up-day)
+                (local-set-key (kbd "C-c t") 'org-toggle-heading)
+                (local-set-key (kbd "C-c w") 'org-refile)
+                (local-set-key (kbd "C-c p") 'org-pomodoro))))
 #+END_SRC
 ** org-term
 This is an extension to org mode that highlights (and will eventually do more interesting things to) definitions and their usages.
@@ -160,6 +191,7 @@ I use erc to connect to znc on a home server.
     "Ezr" (ms/znc-join "remote" "freenode"))
 #+END_SRC
 * ivy
+
 Sometimes, I want to kill virtual buffers.
 #+BEGIN_SRC emacs-lisp :tangle user-config.el
   (defun ms/ivy-kill-buffer-and-virtual ()
@@ -187,7 +219,8 @@ And sometimes I like to seperate those erc buffers.
            (ivy-ignore-buffers
             (-map (lambda (item) (regexp-quote (buffer-name item)))
                   (-filter (lambda (item)
-                             (funcall c mode (buffer-local-value 'major-mode item)))
+                             (and (not (eq item (other-buffer)))
+                                  (funcall c mode (buffer-local-value 'major-mode item))))
                            (buffer-list)))))
       (ivy-switch-buffer)))
 
@@ -205,6 +238,18 @@ And sometimes I like to seperate those erc buffers.
     "bb" 'ms/ivy-switch-buffer-without-erc
     "Eb" 'ms/ivy-switch-buffer-with-erc)
 #+END_SRC
+* projectile
+
+#+BEGIN_SRC emacs-lisp :tangle user-config.el
+  (spacemacs/set-leader-keys "pA" 'counsel-projectile-ag)
+#+END_SRC
+* js
+#+BEGIN_SRC emacs-lisp :tangle user-config.el
+ ;; (defun ms/react-mode-hook-fun ()
+ ;;   (evil-define-key 'insert react-mode-map (kbd "<tab>") 'js-jsx-indent-line)
+ ;;   (emmet-mode 0))
+ ;; (add-hook 'react-mode 'ms/react-mode-hook-fun)
+#+END_SRC
 * extras
 #+BEGIN_SRC emacs-lisp :tangle user-config.el
   (defun rgb-to-hex (r g b)
@@ -215,4 +260,10 @@ And sometimes I like to seperate those erc buffers.
             (string-to-int (substring hexcode 1 3) 16)
             (string-to-int (substring hexcode 3 5) 16)
             (string-to-int (substring hexcode 5 7) 16)))
+#+END_SRC
+Other packages
+#+BEGIN_SRC emacs-lisp :tangle user-config.el
+  (push (directory-file-name "~/.spacemacs.d/packages") load-path)
+  (autoload 'fennel-mode "~/.spacemacs.d/packages/fennel-mode/fennel-mode.el" nil t)
+  (add-to-list 'auto-mode-alist '("\\.fnl\\'" . fennel-mode))
 #+END_SRC

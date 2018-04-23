@@ -87,6 +87,7 @@ alias plz="sudo -p \"What's the secret password? \""
 alias packer='TMPDIR=$HOME/build packer'
 alias keycodes='xmodmad -pke'
 alias yt-dl-mp3='youtube-dl -x --audio-format mp3'
+alias urn.lua='urn'
 
 [[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
 . /etc/profile.d/fzf.zsh

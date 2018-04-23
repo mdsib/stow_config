@@ -10,7 +10,7 @@
 (defun org-term/configure-font-lock ()
   "Sets up the font lock, dude. What else my main man?"
   (font-lock-add-keywords
-   nil
+   'org-mode
    `((,org-term/def-regex (1 '(face org-term/definition-face invisible t))
                           (2 '(face org-term/definition-face))
                           (3 '(face org-term/definition-face invisible t)))))
