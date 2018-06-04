@@ -1,101 +1,72 @@
-# Path to your oh-my-zsh installation.
+HISTSIZE=1000
+SAVEHIST=1000
+HISTFILE=~/.history
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
+setopt APPEND_HISTORY
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
 
-# Uncomment the following line to use hyphen-insensitive completion. Case
-# sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+setopt NO_BEEP
+setopt EXTENDED_GLOB
+setopt CORRECT
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
+[ -x $(command -v "git") ] && alias g="git"
+[ -x $(command -v "nvim") ] && alias vim="nvim"
+[ -x $(command -v "youtube-dl") ] && alias yt-dl-mp3='youtube-dl -x --audio-format mp3'
+[ -x $(command -v "pyenv") ] && eval "$(pyenv init -)"
 
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+[ -r ~/.zshrc-os ] && source ~/.zshrc-os
+[ -r ~/.zshrc-machine ] && source ~/.zshrc-machine
 
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
+# run fzf's install to generate .fzf.zsh. You can skip updating this file.
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
+# TODO: add optional STW_CFG_DIR
+[ -f ~/stow_config/submodules/z/z.sh ] && source ~/stow_config/submodules/z/z.sh
 
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+# prompt ops
+# TODO: assuming this file always exists... ok?
+source ~/stow_config/submodules/zsh-git-prompt/zshrc.sh
+PS1='%F{red}%(?..%? )%F{green}%n@%m %# %f'
+RPS1='%F{cyan}%(5~|%-1~/../%3~|%~)%f$(git_super_status)'
 
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
-# User configuration
-
-# export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
-# export MANPATH="/usr/local/man:$MANPATH"
-
-source $ZSH/oh-my-zsh.sh
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
+# # Do menu-driven completion.
+# zstyle ':completion:*' menu select
 #
-alias vim="nvim"
-alias g="git"
-# this should be a script, not an alias. and plz create init script to get env
-alias dotfiles="STWCFG_TARGET=arch zsh ~/stow_config/build.zsh"
-alias pz="sudo -p \"What's the secret password? \""
-alias plz="sudo -p \"What's the secret password? \""
-alias packer='TMPDIR=$HOME/build packer'
-alias keycodes='xmodmad -pke'
-alias yt-dl-mp3='youtube-dl -x --audio-format mp3'
-alias urn.lua='urn'
+# # Color completion for some things.
+# # http://linuxshellaccount.blogspot.com/2008/12/color-completion-using-zsh-modules-on.html
+# zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+#
+# # formatting and messages
+# # http://www.masterzen.fr/2009/04/19/in-love-with-zsh-part-one/
+# zstyle ':completion:*' verbose yes
+# zstyle ':completion:*:descriptions' format "$fg[yellow]%B--- %d%b"
+# zstyle ':completion:*:messages' format '%d'
+# zstyle ':completion:*:warnings' format "$fg[red]No matches for:$reset_color %d"
+# zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
+# zstyle ':completion:*:*:git:*' verbose yes
+# zstyle ':completion:*' group-name ''
 
-[[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
-. /etc/profile.d/fzf.zsh
+# The following lines were added by compinstall
 
-eval "$(pyenv init -)"
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _complete _ignored
+zstyle ':completion:*' expand prefix suffix
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' matcher-list '' 'm:{[:lower:]}={[:upper:]}' 'r:|[._- ]=** r:|=**' 'l:|=* r:|=*'
+zstyle ':completion:*' menu select=0
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' verbose true
+zstyle :compinstall filename '/Users/mds/.zshrc'
 
-PATH="/home/mds/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="/home/mds/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="/home/mds/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"/home/mds/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=/home/mds/perl5"; export PERL_MM_OPT;
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+[ -f ~/stow_config/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh ] && \
+    source ~/stow_config/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh

@@ -1,0 +1,4 @@
+# arch
+alias keycodes='xmodmad -pke'
+alias packer='TMPDIR=$HOME/build packer'
+export PATH=$PATH:/Users/mds/opt/urn/bin

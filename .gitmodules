@@ -4,3 +4,24 @@
 [submodule "dotfiles/.spacemacs.d/packages/fennel-mode"]
 	path = dotfiles/.spacemacs.d/packages/fennel-mode
 	url = https://gitlab.com/technomancy/fennel-mode
+[submodule "dotfiles/.emacs.d"]
+	path = dotfiles/.emacs.d
+	url = git@github.com:syl20bnr/spacemacs.git
+[submodule "z"]
+	path = z
+	url = git@github.com:rupa/z.git
+[submodule "zsh-git-prompt"]
+	path = zsh-git-prompt
+	url = https://github.com/olivierverdier/zsh-git-prompt
+[submodule "zsh-npm"]
+	path = zsh-npm
+	url = https://github.com/lukechilds/zsh-better-npm-completion.git
+[submodule "submodules/zsh-git-prompt"]
+	path = submodules/zsh-git-prompt
+	url = https://github.com/olivierverdier/zsh-git-prompt
+[submodule "submodules/zsh-npm"]
+	path = submodules/zsh-npm
+	url = https://github.com/lukechilds/zsh-better-npm-completion.git
+[submodule "submodules/z"]
+	path = submodules/z
+	url = https://github.com/rupa/z
