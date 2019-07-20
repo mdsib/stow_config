@@ -6,7 +6,7 @@
 %*%
 dotfiles/.emacs.d/*
 !dotfiles/.emacs.d/init.el
-!dotfiles/.emacs.d/templates
+!dotfiles/.emacs.d/snippets
 
 .lsp-session*
 .cask

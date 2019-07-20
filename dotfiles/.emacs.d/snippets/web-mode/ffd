@@ -1,0 +1,4 @@
+# key: ffd
+# name: ffd
+# --
+const $1 = featureFlag('$1');

@@ -1,0 +1,4 @@
+# key: ff
+# name: ff
+# --
+import featureFlag from 'utils/featureFlag';

@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: import memoize
+# key: im
+# --
+import memoize from 'memoize-one';
