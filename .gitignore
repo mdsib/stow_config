@@ -4,6 +4,13 @@
 \#*#~
 %*%~
 %*%
+dotfiles/.emacs.d/*
+!dotfiles/.emacs.d/init.el
+!dotfiles/.emacs.d/templates
+
+.lsp-session*
+.cask
+.tern-port
 
 # vim
 .viminfo
