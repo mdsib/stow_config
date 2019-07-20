@@ -2,6 +2,9 @@ HISTSIZE=1000
 SAVEHIST=1000
 HISTFILE=~/.history
 
+autoload edit-command-line; zle -N edit-command-line
+bindkey -M vicmd v edit-command-line
+
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
 setopt SHARE_HISTORY
@@ -26,6 +29,11 @@ setopt CORRECT
 
 # TODO: add optional STW_CFG_DIR
 [ -f ~/stow_config/submodules/z/z.sh ] && source ~/stow_config/submodules/z/z.sh
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 
 # prompt ops
@@ -70,3 +78,7 @@ compinit
 
 [ -f ~/stow_config/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh ] && \
     source ~/stow_config/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh
+
+
+# Sigma stuff
+[ -r ~/.sigma/zsh] && source ~/.sigma/zsh

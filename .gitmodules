@@ -25,3 +25,9 @@
 [submodule "submodules/z"]
 	path = submodules/z
 	url = https://github.com/rupa/z
+[submodule "dotfiles/.emacs.d.spacemacs"]
+	path = dotfiles/.emacs.d.spacemacs
+	url = git@github.com:syl20bnr/spacemacs.git
+[submodule "dotfiles/"]
+	path = dotfiles/.emacs.d.spacemacs
+	url = git@github.com:syl20bnr/spacemacs.git

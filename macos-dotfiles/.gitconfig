@@ -15,4 +15,14 @@
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	apply-gitignore = !git ls-files -ci --exclude-standard -z | xargs -0 git rm --cached
 [credential]
-	helper = osxkeychain
+	helper = store
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[github]
+	user = mdsib
+	oauth-token = 4b6c944cf7b38fccef42f9d92dc3ddc1374895a6
+[url]
+	ssh = //git@github.com/
