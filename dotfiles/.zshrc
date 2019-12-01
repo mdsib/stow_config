@@ -81,4 +81,4 @@ compinit
 
 
 # Sigma stuff
-[ -r ~/.sigma/zsh] && source ~/.sigma/zsh
+[ -r ~/.sigma/zsh ] && source ~/.sigma/zsh
