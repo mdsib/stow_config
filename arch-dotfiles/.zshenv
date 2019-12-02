@@ -1,4 +1,3 @@
-export ZSH=/home/mds/.oh-my-zsh
 export PATH=$PATH:$(ruby -e 'print Gem.user_dir')/bin:$HOME/bin:/Library/TeX/texbin/:/opt/clojurescript/bin:$HOME/.cargo/bin:/usr/lib/emscripten
 export EDITOR=emacsclient
 export CEF_DIR=/opt/cef-minimal/

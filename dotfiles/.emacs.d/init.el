@@ -26,7 +26,8 @@
       delete-old-versions t  ; Automatically delete excess backups
       kept-new-versions 10   ; how many of the newest versions to keep
       kept-old-versions 5)   ; and how many of the old
- 
+
+(require 'package)
 (eval-and-compile
   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
   (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))

@@ -28,16 +28,16 @@ bindsym $mod+Shift+a move workspace to output up; move workspace to output right
 
 # important SHIT
 assign [class="Emacs"] 0:emacs
-assign [class="Firefox"] 1:net
-assign [class="Chromium"] 1:net
-assign [class="UXTerm"] 2:shell
+assign [window_role="browser"] 2:net
+assign [class="UXTerm"] 1:shell
+assign [class="XTerm"] 1:shell
 
 bindsym $mod+z workspace 0:emacs
-bindsym $mod+x workspace 1:net
-bindsym $mod+c workspace 2:shell
+bindsym $mod+x workspace 1:shell
+bindsym $mod+c workspace 2:net
 bindsym $mod+Shift+z move window to workspace "0:emacs"
-bindsym $mod+Shift+x move window to workspace "1:net"
-bindsym $mod+Shift+c move window to workspace "2:shell"
+bindsym $mod+Shift+x move window to workspace "1:shell"
+bindsym $mod+Shift+c move window to workspace "2:net"
 
 workspace_layout tabbed
 
@@ -83,7 +83,7 @@ font pango:monospace 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec xterm
 
 
 # start dmenu (a program launcher)

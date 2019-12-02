@@ -2,6 +2,9 @@ HISTSIZE=1000
 SAVEHIST=1000
 HISTFILE=~/.history
 
+# cfg for dotfile management
+source ~/.stow-cfg
+
 autoload edit-command-line; zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
 
@@ -27,8 +30,7 @@ setopt CORRECT
 # run fzf's install to generate .fzf.zsh. You can skip updating this file.
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# TODO: add optional STW_CFG_DIR
-[ -f ~/stow_config/submodules/z/z.sh ] && source ~/stow_config/submodules/z/z.sh
+[ -f $STOW_DIR/submodules/z/z.sh ] && source $STOW_DIR/submodules/z/z.sh
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -37,8 +39,7 @@ export NVM_DIR="$HOME/.nvm"
 
 
 # prompt ops
-# TODO: assuming this file always exists... ok?
-source ~/stow_config/submodules/zsh-git-prompt/zshrc.sh
+source $STOW_DIR/submodules/zsh-git-prompt/zshrc.sh
 PS1='%F{red}%(?..%? )%F{green}%n@%m %# %f'
 RPS1='%F{cyan}%(5~|%-1~/../%3~|%~)%f$(git_super_status)'
 
@@ -76,8 +77,8 @@ autoload -Uz compinit
 compinit
 # End of lines added by compinstall
 
-[ -f ~/stow_config/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh ] && \
-    source ~/stow_config/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh
+[ -f $STOW_DIR/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh ] && \
+    source $STOW_DIR/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh
 
 
 # Sigma stuff
