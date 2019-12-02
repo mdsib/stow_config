@@ -8,6 +8,13 @@ dotfiles/.emacs.d/*
 !dotfiles/.emacs.d/init.el
 !dotfiles/.emacs.d/snippets
 
+# workaround for keeping dirs private and private/backup around
+!dotfiles/.emacs.d/private
+dotfiles/.emacs.d/private/*
+!dotfiles/.emacs.d/private/backup
+dotfiles/.emacs.d/private/backup/*
+!dotfiles/.emacs.d/private/backup/.gitkeep
+
 .lsp-session*
 .cask
 .tern-port
