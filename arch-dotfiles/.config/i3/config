@@ -26,15 +26,21 @@ bindsym $mod+space focus output right
 # move workspace to other output
 bindsym $mod+Shift+a move workspace to output up; move workspace to output right;
 
-# important SHIT
 assign [class="Emacs"] 0:emacs
+
 assign [window_role="browser"] 2:net
 assign [class="UXTerm"] 1:shell
 assign [class="XTerm"] 1:shell
 
+# laptop bindings
 bindsym $mod+z workspace 0:emacs
 bindsym $mod+x workspace 1:shell
 bindsym $mod+c workspace 2:net
+# kinesis bindings
+bindsym $mod+ctrl+z workspace 0:emacs
+bindsym $mod+ctrl+x workspace 1:shell
+bindsym $mod+ctrl+c workspace 2:net
+
 bindsym $mod+Shift+z move window to workspace "0:emacs"
 bindsym $mod+Shift+x move window to workspace "1:shell"
 bindsym $mod+Shift+c move window to workspace "2:net"

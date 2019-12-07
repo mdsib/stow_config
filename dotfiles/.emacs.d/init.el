@@ -47,7 +47,18 @@
 ;;;;;;;;; PACKAGES ;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package ag :ensure t)
+(use-package cheat-sh :ensure t)
+
+(use-package rust-mode
+  :ensure t
+  :config
+  (setq rust-format-on-save t)
+  (defun my/init-rust-mode ()
+    (setq indent-tabs-mode nil))
+  (add-hook 'rust-mode-hook #'my/init-rust-mode ))
+
+(use-package ag
+  :ensure t)
 
 (use-package auto-highlight-symbol
   :ensure t)
@@ -253,6 +264,7 @@
 (define-key 'spacer "g" 'say-message)
 (define-key 'spacer "t" 'toggle-window-split)
 (define-key 'spacer "v" 'me/toggle-notepad)
+(define-key 'spacer' "c" #'cheat-sh)
 
 (define-prefix-command 'ts-prefix)
 (define-key 'spacer "l" 'ts-prefix)
@@ -307,7 +319,7 @@ HERE: a file path to find"
  '(magit-diff-refine-hunk (quote all))
  '(package-selected-packages
    (quote
-    (magit-stash golden-ratio graphql-mode import-js company-lsp lsp-ui lsp-mode-ui lsp-mode image-dired+ diredp dired-p org-pomodoro evil-smartparens smartparens-javascript smart-parens smartparens nvm color-theme-buffer-local yasnippet cider exec-path-from-shell flycheck flymake-eslint git-gutter magit-gutter evil-lispy racket-mode auto-highlight-symbol highlight-symbol smooth-scrolling prettier-js prettier prettierjs ag counsel-projectile company-tern web-mode company tern which-key projectile ivy evil use-package)))
+    (cheat-sh rust-mode magit-stash golden-ratio graphql-mode import-js company-lsp lsp-ui lsp-mode-ui lsp-mode image-dired+ diredp dired-p org-pomodoro evil-smartparens smartparens-javascript smart-parens smartparens nvm color-theme-buffer-local yasnippet cider exec-path-from-shell flycheck flymake-eslint git-gutter magit-gutter evil-lispy racket-mode auto-highlight-symbol highlight-symbol smooth-scrolling prettier-js prettier prettierjs ag counsel-projectile company-tern web-mode company tern which-key projectile ivy evil use-package)))
  '(safe-local-variable-values (quote ((standard-indent . 2))))
  '(split-height-threshold 95)
  '(split-window-preferred-function (quote split-window-sensibly))
