@@ -1,4 +1,6 @@
-# arch
-alias keycodes='xmodmad -pke'
-alias packer='TMPDIR=$HOME/build packer'
-export PATH=$PATH:/Users/mds/opt/urn/bin
+# macos
+export PATH=$PATH:/home/mds/perl5/bin
+export PERL5LIB="/home/mds/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"
+export PERL_LOCAL_LIB_ROOT="/home/mds/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"
+export PERL_MB_OPT="--install_base \"/home/mds/perl5\""
+export PERL_MM_OPT="INSTALL_BASE=/home/mds/perl5"

@@ -14,7 +14,9 @@
 (setq scroll-margin 10
       scroll-conservatively 1
       display-line-numbers-width 3
-      standard-indent 2)
+      standard-indent 2
+      help-window-select t
+      comint-prompt-read-only t)
 
 (define-prefix-command 'spacer )
 (global-set-key (kbd "M-SPC") 'spacer)
@@ -26,6 +28,16 @@
       delete-old-versions t  ; Automatically delete excess backups
       kept-new-versions 10   ; how many of the newest versions to keep
       kept-old-versions 5)   ; and how many of the old
+
+(defun setup-lisplike ()
+    (smartparens-strict-mode t))
+(dolist (hook '(lisp-mode-hook emacs-lisp-mode-hook racket-mode-hook scheme-mode-hook clojure-mode-hook))
+  (add-hook hook #'setup-lisplike))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;; PACKAGES ;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'package)
 (eval-and-compile
@@ -43,59 +55,38 @@
 (eval-when-compile
   (require 'use-package))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;; PACKAGES ;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package cheat-sh :ensure t)
-
-(use-package rust-mode
-  :ensure t
-  :config
-  (setq rust-format-on-save t)
-  (defun my/init-rust-mode ()
-    (setq indent-tabs-mode nil))
-  (add-hook 'rust-mode-hook #'my/init-rust-mode ))
-
 (use-package ag
   :ensure t)
-
 (use-package auto-highlight-symbol
   :ensure t)
-
+(use-package cheat-sh :ensure t)
 (use-package cider
   :ensure t)
-
 ;;(use-package color-theme-buffer-local
 ;;  :ensure t)
-
 (use-package company
   :ensure t
   :config
   (global-company-mode t))
-
 (use-package counsel-projectile
   :ensure t
   :after (projectile)
   :config
   (define-key projectile-command-map "A" 'counsel-projectile-rg))
-
-(use-package image-dired+ :ensure t)
-
 (use-package evil
   :ensure t
   :config
-  (evil-mode t)
+  ;; (evil-mode t)
   (add-to-list 'evil-emacs-state-modes 'racket-describe-mode)
   (add-to-list 'evil-emacs-state-modes 'tide-project-errors-mode)
   (add-to-list 'evil-emacs-state-modes 'tide-references-mode))
-
 (use-package exec-path-from-shell
   :ensure t
   :config
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
-
+(use-package expand-region :ensure t
+  :bind ("C-=" . er/expand-region))
 (use-package flycheck
   :ensure t
   :after (web-mode)
@@ -108,30 +99,57 @@
   (flycheck-add-mode 'javascript-eslint 'web-mode)
   (flycheck-add-mode 'typescript-tslint 'web-mode)
   (flycheck-add-next-checker 'typescript-tslint '(t . jsx-tide) 'append))
-
 (use-package git-gutter
   :ensure t
   :config
   (global-git-gutter-mode t))
-
+(use-package god-mode :ensure t
+  :config
+  (global-set-key (kbd "M-SPC SPC") #'god-local-mode)
+  (global-set-key (kbd "M-SPC M-SPC") #'god-local-mode)
+  (define-key god-local-mode-map (kbd ".") #'repeat)
+  (defun my-god-mode-update-cursor-type ()
+    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
+  (add-hook 'post-command-hook #'my-god-mode-update-cursor-type))
+(use-package graphql-mode :ensure t)
+(use-package image-dired+ :ensure t)
 (use-package ivy
   :ensure t
   :config
-  (ivy-mode t))
-
+  (ivy-mode t)
+  (setq ivy-initial-inputs-alist nil)
+  (setq ivy-use-virtual-buffers t)
+  (setq enable-recursive-minibuffers t)
+  ;; enable this if you want `swiper' to use it
+  ;; (setq search-default-mode #'char-fold-to-regexp)
+  ;; (global-set-key "\C-s" 'swiper)
+  (global-set-key (kbd "M-SPC a") 'avy-goto-word-1)
+  (global-set-key (kbd "M-SPC A") 'avy-goto-subword-1)
+  (global-set-key (kbd "M-SPC s") 'avy-goto-word-0-below)
+  (global-set-key (kbd "M-SPC S") 'avy-goto-word-0-above)
+  (global-set-key (kbd "C-c C-r") 'ivy-resume)
+  (global-set-key (kbd "<f6>") 'ivy-resume)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> o") 'counsel-describe-symbol)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "C-c g") 'counsel-git)
+  (global-set-key (kbd "C-c j") 'counsel-git-grep)
+  (global-set-key (kbd "C-c k") 'counsel-ag))
 (use-package magit :ensure t)
-
 (use-package org
   :config
   (visual-line-mode t)
   (org-indent-mode t))
-
 (use-package prettier-js
   :ensure t
   :after (web-mode)
   :config
   (add-hook 'web-mode-hook 'prettier-js-mode))
-
 (use-package projectile
   :ensure t
   :bind-keymap
@@ -142,18 +160,24 @@
 	projectile-completion-system 'ivy
 	projectile-require-project-root nil)
         projectile-switch-project-action 'projectile-dired)
-
 (use-package racket-mode
   :ensure t)
-
-(use-package graphql-mode :ensure t)
-
+(use-package rust-mode
+  :ensure t
+  :config
+  (setq rust-format-on-save t)
+  (defun my/init-rust-mode ()
+    (setq indent-tabs-mode nil))
+  (add-hook 'rust-mode-hook #'my/init-rust-mode ))
+(use-package smartparens
+  :ensure t
+  :config
+  (sp-local-pair '(emacs-lisp-mode) "'" "'" :actions nil))
 (use-package smooth-scrolling
   :ensure t
   :config
   (smooth-scrolling-mode 1)
   (setq smooth-scroll-margin 5))
-
 (defun me/setup-tide-mode ()
   "Set up tide mode."
   (interactive)
@@ -163,7 +187,6 @@
   (eldoc-mode +1)
   (tide-hl-identifier-mode +1)
   (company-mode +1))
-
 (use-package tide
   :ensure t
   :after (web-mode flycheck company)
@@ -172,7 +195,6 @@
 	    (lambda ()
 	      (when (string-match "tsx?" (file-name-extension buffer-file-name))
 		(me/setup-tide-mode)))))
-
 (setq-local mds/web-mode-reg "\\.[tj]sx?\\'")
 (eval `(use-package web-mode
   :ensure t
@@ -183,13 +205,10 @@
 	web-mode-enable-auto-quoting nil)
   (defun my-web-mode-hook ()
     (setq web-mode-enable-auto-pairing nil))
-  (add-hook 'web-mode-hook  'my-web-mode-hook)
-  ))
-
+  (add-hook 'web-mode-hook  'my-web-mode-hook)))
 (use-package which-key
   :ensure t
   :config (which-key-mode t))
-
 (use-package yasnippet
   :ensure t
   :config (yas-global-mode +1))
@@ -215,8 +234,7 @@
     (condition-case nil
 	(select-frame-by-name "***NOTES***")
       (error (progn (make-frame `((name . "***NOTES***")))
-		    (select-frame-by-name "***NOTES***")))))
-  )
+		    (select-frame-by-name "***NOTES***"))))))
 
 ;; from https://www.emacswiki.org/emacs/ToggleWindowSplit
 (defun toggle-window-split ()
@@ -257,25 +275,25 @@
      "Window '%s' is normal")
    (current-buffer)))
 
-
-(define-key 'spacer "b" 'magit-blob-previous)
-(define-key 'spacer "d" 'toggle-window-dedicated)
-(define-key 'spacer "f" 'magit-blob-next)
-(define-key 'spacer "g" 'say-message)
-(define-key 'spacer "t" 'toggle-window-split)
-(define-key 'spacer "v" 'me/toggle-notepad)
-(define-key 'spacer' "c" #'cheat-sh)
-
-(define-prefix-command 'ts-prefix)
-(define-key 'spacer "l" 'ts-prefix)
-(define-key 'ts-prefix "d" 'tide-jump-to-definition)
-(define-key 'ts-prefix "r" 'tide-references)
-(define-key 'ts-prefix "b" 'tide-find-previous-reference)
-(define-key 'ts-prefix "f" 'tide-find-next-reference)
-(define-key 'ts-prefix "h" 'tide-documentation-at-point)
-(define-key 'ts-prefix "u" 'tide-jump-back)
-(define-key 'ts-prefix "e" 'tide-project-errors)
-(define-key 'ts-prefix "x" 'tide-restart-server)
+(define-key 'spacer "b" #'magit-blob-previous)
+(define-key 'spacer "f" #'magit-blob-next)
+(define-key 'spacer "d" #'toggle-window-dedicated)
+(define-key 'spacer "t" #'toggle-window-split)
+(define-key 'spacer "g" #'say-message)
+(define-key 'spacer "m" #'me/toggle-notepad)
+(define-key 'spacer "c" #'cheat-sh)
+(define-key 'spacer "j" #'lispy-mode)
+(define-key 'spacer "v" #'evil-mode)
+(define-prefix-command #'ts-prefix)
+(define-key 'spacer "l" #'ts-prefix)
+(define-key 'ts-prefix "d" #'tide-jump-to-definition)
+(define-key 'ts-prefix "r" #'tide-references)
+(define-key 'ts-prefix "b" #'tide-find-previous-reference)
+(define-key 'ts-prefix "f" #'tide-find-next-reference)
+(define-key 'ts-prefix "h" #'tide-documentation-at-point)
+(define-key 'ts-prefix "u" #'tide-jump-back)
+(define-key 'ts-prefix "e" #'tide-project-errors)
+(define-key 'ts-prefix "x" #'tide-restart-server)
 
 ;; move around sanely
 (define-prefix-command 'windmover)
@@ -316,13 +334,12 @@ HERE: a file path to find"
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(magit-diff-highlight-indentation nil)
- '(magit-diff-refine-hunk (quote all))
+ '(magit-diff-refine-hunk 'all)
  '(package-selected-packages
-   (quote
-    (cheat-sh rust-mode magit-stash golden-ratio graphql-mode import-js company-lsp lsp-ui lsp-mode-ui lsp-mode image-dired+ diredp dired-p org-pomodoro evil-smartparens smartparens-javascript smart-parens smartparens nvm color-theme-buffer-local yasnippet cider exec-path-from-shell flycheck flymake-eslint git-gutter magit-gutter evil-lispy racket-mode auto-highlight-symbol highlight-symbol smooth-scrolling prettier-js prettier prettierjs ag counsel-projectile company-tern web-mode company tern which-key projectile ivy evil use-package)))
- '(safe-local-variable-values (quote ((standard-indent . 2))))
+   '(god-mode cheat-sh rust-mode magit-stash golden-ratio graphql-mode import-js company-lsp lsp-ui lsp-mode-ui lsp-mode image-dired+ diredp dired-p org-pomodoro evil-smartparens smartparens-javascript smart-parens smartparens nvm color-theme-buffer-local yasnippet cider exec-path-from-shell flycheck flymake-eslint git-gutter magit-gutter evil-lispy racket-mode auto-highlight-symbol highlight-symbol smooth-scrolling prettier-js prettier prettierjs ag counsel-projectile company-tern web-mode company tern which-key projectile ivy evil use-package))
+ '(safe-local-variable-values '((standard-indent . 2)))
  '(split-height-threshold 95)
- '(split-window-preferred-function (quote split-window-sensibly))
+ '(split-window-preferred-function 'split-window-sensibly)
  '(tide-disable-suggestions t)
  '(tide-server-max-response-length 999999)
  '(tide-tscompiler-executable "./node_modules/.bin/tsc")
