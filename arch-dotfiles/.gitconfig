@@ -1,6 +1,7 @@
 [user]
 	name = Massimo Siboldi
 	email = mdsiboldi@gmail.com
+	signingkey = 85A1B1487111CD8A
 [alias]
 	dc = diff --cached
 	aa = add -A
