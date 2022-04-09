@@ -4,10 +4,11 @@
 ;;; I'm putting this here so my linter doesn't complain.
 
 ;;; Code:
-(electric-indent-mode t)
-(electric-pair-mode t)
+(electric-indent-mode)
+(electric-pair-mode)
 (show-paren-mode t)
-(global-display-line-numbers-mode t)
+(global-display-line-numbers-mode)
+(global-visual-line-mode)
 
 (load-theme 'deeper-blue)
 
@@ -16,7 +17,8 @@
       display-line-numbers-width 3
       standard-indent 2
       help-window-select t
-      comint-prompt-read-only t)
+      comint-prompt-read-only t
+      visible-bell 1)
 
 (define-prefix-command 'spacer )
 (global-set-key (kbd "M-SPC") 'spacer)
@@ -30,7 +32,8 @@
       kept-old-versions 5)   ; and how many of the old
 
 (defun setup-lisplike ()
-    (smartparens-strict-mode t))
+  (smartparens-strict-mode 1)
+  (electric-pair-mode 0))
 (dolist (hook '(lisp-mode-hook emacs-lisp-mode-hook racket-mode-hook scheme-mode-hook clojure-mode-hook))
   (add-hook hook #'setup-lisplike))
 
@@ -55,6 +58,19 @@
 (eval-when-compile
   (require 'use-package))
 
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
 (use-package ag
   :ensure t)
 (use-package auto-highlight-symbol
@@ -75,11 +91,18 @@
   (define-key projectile-command-map "A" 'counsel-projectile-rg))
 (use-package evil
   :ensure t
+  :after (god-mode)
   :config
   ;; (evil-mode t)
   (add-to-list 'evil-emacs-state-modes 'racket-describe-mode)
   (add-to-list 'evil-emacs-state-modes 'tide-project-errors-mode)
-  (add-to-list 'evil-emacs-state-modes 'tide-references-mode))
+  (add-to-list 'evil-emacs-state-modes 'tide-references-mode)
+  (setq evil-insert-state-cursor '(hbar  "yellow")
+	evil-normal-state-cursor '(hollow "purple")
+	evil-undo-system 'undo-tree)
+  (defun update-cursor-type ()
+    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box (if evil-mode t 'bar))))
+  (add-hook 'post-command-hook #'update-cursor-type))
 (use-package exec-path-from-shell
   :ensure t
   :config
@@ -105,12 +128,7 @@
   (global-git-gutter-mode t))
 (use-package god-mode :ensure t
   :config
-  (global-set-key (kbd "M-SPC SPC") #'god-local-mode)
-  (global-set-key (kbd "M-SPC M-SPC") #'god-local-mode)
-  (define-key god-local-mode-map (kbd ".") #'repeat)
-  (defun my-god-mode-update-cursor-type ()
-    (setq cursor-type (if (or god-local-mode buffer-read-only) 'box 'bar)))
-  (add-hook 'post-command-hook #'my-god-mode-update-cursor-type))
+  (define-key god-local-mode-map (kbd ".") #'repeat))
 (use-package graphql-mode :ensure t)
 (use-package image-dired+ :ensure t)
 (use-package ivy
@@ -141,10 +159,34 @@
   (global-set-key (kbd "C-c j") 'counsel-git-grep)
   (global-set-key (kbd "C-c k") 'counsel-ag))
 (use-package magit :ensure t)
+(defun my/org-hook ()
+  (message "hello")
+  (org-indent-mode)
+  (setq org-adapt-indentation nil))
 (use-package org
+  :hook (org-mode . my/org-hook))
+(use-package org-roam :ensure t
+  :init
+  (setq org-roam-v2-ack t)
   :config
-  (visual-line-mode t)
-  (org-indent-mode t))
+  (org-roam-db-autosync-mode)
+  (setq org-roam-completion-everywhere t))
+(use-package org-roam-ui
+  :straight
+    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+(use-package popup-kill-ring
+  :ensure t
+  :bind ("M-y" . #'popup-kill-ring))
 (use-package prettier-js
   :ensure t
   :after (web-mode)
@@ -160,19 +202,36 @@
 	projectile-completion-system 'ivy
 	projectile-require-project-root nil)
         projectile-switch-project-action 'projectile-dired)
+(use-package nhexl-mode
+  :ensure t)
 (use-package racket-mode
   :ensure t)
-(use-package rust-mode
+(use-package eglot :ensure t
+  :config
+  (add-hook 'eglot--managed-mode-hook (lambda () (flymake-mode -1))))
+(use-package racer
   :ensure t
   :config
+  (add-hook 'racer-mode-hook #'eldoc-mode))
+(use-package rust-mode			
+  :ensure t
+  :bind
+  ("C-c C-r" . #'rust-run)
+  ("C-c C-c" . #'rust-compile)
+  :config
   (setq rust-format-on-save t)
-  (defun my/init-rust-mode ()
+  (electric-pair-mode 1)
+  (electric-indent-mode 1)
+(defun my/init-rust-mode ()
     (setq indent-tabs-mode nil))
-  (add-hook 'rust-mode-hook #'my/init-rust-mode ))
+  (add-hook 'rust-mode-hook #'my/init-rust-mode)
+  (add-hook 'rust-mode-hook #'racer-mode))
 (use-package smartparens
   :ensure t
   :config
-  (sp-local-pair '(emacs-lisp-mode) "'" "'" :actions nil))
+  (sp-local-pair '(emacs-lisp-mode) "'" "'" :actions nil)
+  (sp-local-pair '(racket-mode) "'" "'" :actions nil)
+  (sp-use-paredit-bindings))
 (use-package smooth-scrolling
   :ensure t
   :config
@@ -196,6 +255,10 @@
 	      (when (string-match "tsx?" (file-name-extension buffer-file-name))
 		(me/setup-tide-mode)))))
 (setq-local mds/web-mode-reg "\\.[tj]sx?\\'")
+(use-package undo-tree
+  :ensure t
+  :config
+  (global-undo-tree-mode 1))
 (eval `(use-package web-mode
   :ensure t
   :mode ,mds/web-mode-reg
@@ -275,6 +338,19 @@
      "Window '%s' is normal")
    (current-buffer)))
 
+(defun toggle-evil-mode ()
+  "Toggle evil mode and god mode"
+  (interactive)
+  (if evil-mode (evil-mode 0) (progn (evil-mode 1) (god-mode-activate 0))))
+(defun toggle-god-mode ()
+  (interactive)
+  (if god-mode (god-mode-activate 0) (progn (evil-mode 0) (god-mode-activate 1))))
+(define-key 'spacer (kbd "M-SPC") #'god-local-mode)
+(define-key 'spacer "v" #'toggle-evil-mode)
+(define-key 'spacer "1" #'profiler-start)
+(define-key 'spacer "2" #'profiler-report)
+(define-key 'spacer "3" #'profiler-stop)
+(define-key 'spacer (kbd "SPC") #'just-one-space)
 (define-key 'spacer "b" #'magit-blob-previous)
 (define-key 'spacer "f" #'magit-blob-next)
 (define-key 'spacer "d" #'toggle-window-dedicated)
@@ -283,7 +359,6 @@
 (define-key 'spacer "m" #'me/toggle-notepad)
 (define-key 'spacer "c" #'cheat-sh)
 (define-key 'spacer "j" #'lispy-mode)
-(define-key 'spacer "v" #'evil-mode)
 (define-prefix-command #'ts-prefix)
 (define-key 'spacer "l" #'ts-prefix)
 (define-key 'ts-prefix "d" #'tide-jump-to-definition)
@@ -294,6 +369,13 @@
 (define-key 'ts-prefix "u" #'tide-jump-back)
 (define-key 'ts-prefix "e" #'tide-project-errors)
 (define-key 'ts-prefix "x" #'tide-restart-server)
+(define-prefix-command #'roam-prefix)
+(define-key 'spacer "r" #'roam-prefix)
+(define-key 'roam-prefix "f" #'org-roam-node-find)
+(define-key 'roam-prefix "i" #'org-roam-node-insert)
+(define-key 'roam-prefix "r" #'org-roam-capture)
+(define-key 'roam-prefix "t" #'org-roam-buffer-toggle)
+(define-key 'roam-prefix "d" #'org-roam-dailies-goto-today)
 
 ;; move around sanely
 (define-prefix-command 'windmover)
@@ -327,6 +409,29 @@ HERE: a file path to find"
 
 (define-key 'spacer "n" 'find-note)
 
+(defun er-sudo-edit (&optional arg)
+  "Edit currently visited file as root.
+
+With a prefix ARG prompt for a file to visit.
+Will also prompt for a file to visit if current
+buffer is not visiting a file."
+  (interactive "P")
+  (if (or arg (not buffer-file-name))
+      (find-file (concat "/sudo:root@localhost:"
+                         (ido-read-file-name "Find file(as root): ")))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+(global-set-key (kbd "C-x C-r") #'er-sudo-edit)
+
+(defun my-asm-mode-hook ()
+  ;; you can use `comment-dwim' (M-;) for this kind of behaviour anyway
+  (local-unset-key (vector asm-comment-char))
+  ;; asm-mode sets it locally to nil, to "stay closer to the old TAB behaviour".
+  (setq tab-always-indent (default-value 'tab-always-indent)))
+
+(add-hook 'asm-mode-hook #'my-asm-mode-hook)
+
+
 ;; generated
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -336,7 +441,7 @@ HERE: a file path to find"
  '(magit-diff-highlight-indentation nil)
  '(magit-diff-refine-hunk 'all)
  '(package-selected-packages
-   '(god-mode cheat-sh rust-mode magit-stash golden-ratio graphql-mode import-js company-lsp lsp-ui lsp-mode-ui lsp-mode image-dired+ diredp dired-p org-pomodoro evil-smartparens smartparens-javascript smart-parens smartparens nvm color-theme-buffer-local yasnippet cider exec-path-from-shell flycheck flymake-eslint git-gutter magit-gutter evil-lispy racket-mode auto-highlight-symbol highlight-symbol smooth-scrolling prettier-js prettier prettierjs ag counsel-projectile company-tern web-mode company tern which-key projectile ivy evil use-package))
+   '(org-roam racer eglot expand-region popup-kill-ring undo-tree god-mode cheat-sh rust-mode magit-stash golden-ratio graphql-mode import-js company-lsp lsp-ui lsp-mode-ui lsp-mode image-dired+ diredp dired-p org-pomodoro evil-smartparens smartparens-javascript smart-parens smartparens nvm color-theme-buffer-local yasnippet cider exec-path-from-shell flycheck flymake-eslint git-gutter magit-gutter evil-lispy racket-mode auto-highlight-symbol highlight-symbol smooth-scrolling prettier-js prettier prettierjs ag counsel-projectile company-tern web-mode company tern which-key projectile ivy evil use-package))
  '(safe-local-variable-values '((standard-indent . 2)))
  '(split-height-threshold 95)
  '(split-window-preferred-function 'split-window-sensibly)

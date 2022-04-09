@@ -28,7 +28,7 @@ floating_modifier $mod
 
 # start a terminal
 # bindsym $mod+Return exec terminal
-bindsym $mod+Return exec xterm
+bindsym $mod+Return exec --no-startup-id xterm
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -69,18 +69,14 @@ bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart du
 bindsym Print exec --no-startup-id i3-scrot
 bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
 bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
-bindsym $mod+Shift+h exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
+#bindsym $mod+Shift+h exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
+bindsym $mod+Shift+h exec /home/mds/bin/i3-list-bindings
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 bindsym $mod+p exec gpaste-menu
 
 # focus_follows_mouse no
 
 # change focus
-#bindsym $mod+j focus left
-#bindsym $mod+k focus down
-#bindsym $mod+l focus up
-#bindsym $mod+semicolon focus right
-
 bindsym $mod+h focus left
 bindsym $mod+j focus down
 bindsym $mod+k focus up
@@ -179,7 +175,7 @@ bindsym $mod+4 workspace --no-auto-back-and-forth $ws4
 bindsym $mod+5 workspace --no-auto-back-and-forth $ws5
 bindsym $mod+6 workspace --no-auto-back-and-forth $ws6
 bindsym $mod+7 workspace --no-auto-back-and-forth $ws7
-bindsym $mod+8 workspace --no-auto-back-and-forth $ws8
+# bindsym $mod+8 workspace --no-auto-back-and-forth $ws8
 
 bindsym $mod+z workspace --no-auto-back-and-forth $wsZ
 bindsym $mod+x workspace --no-auto-back-and-forth $wsX
@@ -230,7 +226,7 @@ for_window [title="File Transfer*"] floating enable
 for_window [class="fpakman"] floating enable
 for_window [class="Galculator"] floating enable border pixel 1
 for_window [class="GParted"] floating enable border normal
-for_window [title="i3_help"] floating enable sticky enable border normal
+#for_window [title="i3_help"] floating enable sticky enable border normal
 for_window [class="Lightdm-settings"] floating enable
 for_window [class="Lxappearance"] floating enable sticky enable border normal
 for_window [class="Manjaro-hello"] floating enable
@@ -250,13 +246,17 @@ for_window [class="Skype"] floating enable border normal
 for_window [class="Timeset-gui"] floating enable border normal
 for_window [class="(?i)virtualbox"] floating enable border normal
 for_window [class="Xfburn"] floating enable
+for_window [title="i3-list-bindings"] floating enable border normal
+
+# no_focus [title="i3-list-bindings"]
 
 # switch to workspace with urgent window automatically
 for_window [urgent=latest] focus
 
+# mds: why do I need this when I have inplace restart?
 # reload the configuration file
 # bindsym $mod+Shift+c reload
-bindsym $mod+Shift+v reload
+# bindsym $mod+Shift+v reload
 
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
@@ -310,8 +310,8 @@ bindsym $mod+9 exec --no-startup-id blurlock
 
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id nitrogen --restore; sleep 1; picom -b
-exec --no-startup-id manjaro-hello
+# exec --no-startup-id nitrogen --restore; sleep 1; picom -b
+# exec --no-startup-id manjaro-hello
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
 exec --no-startup-id pamac-tray
@@ -323,7 +323,6 @@ exec --no-startup-id start_conky_maia
 exec --no-startup-id xautolock -time 10 -locker blurlock
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
-exec --no-startup-id gpaste-client start
 
 # Color palette used for the terminal ( ~/.Xresources file )
 # Colors are gathered based on the documentation:
@@ -446,7 +445,7 @@ mode "$mode_gaps_outer" {
         bindsym plus  gaps outer current plus 5
         bindsym minus gaps outer current minus 5
         bindsym 0     gaps outer current set 0
-
+ 
         bindsym Shift+plus  gaps outer all plus 5
         bindsym Shift+minus gaps outer all minus 5
         bindsym Shift+0     gaps outer all set 0
@@ -459,3 +458,10 @@ mode "$mode_gaps_outer" {
 
 # this could probably be loaded via the shell instead of here
 exec exec xrdb ~/.Xresources
+
+exec xset r rate 220 45
+
+exec --no-startup-id xfce4-clipman
+bindsym $mod+Shift+s --release exec --no-startup-id i3-scrot -sc
+bindsym $mod+Shift+v --release exec --no-startup-id xfce4-clipman-history
+bindsym $mod+8 move workspace to output down
