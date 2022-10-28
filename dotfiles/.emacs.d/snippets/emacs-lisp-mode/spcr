@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: spcr
-# key: spcr
-# --
-
-(define-key 'spacer (kbd "$1") #'$2)

@@ -1,5 +1,5 @@
 [user]
-	name = Massimo Siboldi
+	name = massi
 	email = mdsiboldi@gmail.com
 	signingkey = 85A1B1487111CD8A
 [alias]
@@ -18,3 +18,9 @@
 	program = gpg2
 [github]
 	user = mdsib
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential

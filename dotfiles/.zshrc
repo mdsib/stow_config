@@ -5,6 +5,9 @@ HISTFILE=~/.history
 # cfg for dotfile management
 source ~/.stow-cfg
 
+# vi mode
+bindkey -v
+
 autoload edit-command-line; zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
 
