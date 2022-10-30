@@ -8,8 +8,13 @@ source ~/.stow-cfg
 # vi mode
 bindkey -v
 
+# edit line in editor
 autoload edit-command-line; zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
+
+# keep ctrl n and p around
+bindkey ^n down-history
+bindkey ^p up-history
 
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
@@ -22,10 +27,10 @@ setopt NO_BEEP
 setopt EXTENDED_GLOB
 setopt CORRECT
 
-[ -x $(command -v "git") ] && alias g="git"
-[ -x $(command -v "nvim") ] && alias vim="nvim"
-[ -x $(command -v "youtube-dl") ] && alias yt-dl-mp3='youtube-dl -x --audio-format mp3'
-[ -x $(command -v "pyenv") ] && eval "$(pyenv init -)"
+command -v git >/dev/null 2>&1 && alias g="git"
+command -v nvim >/dev/null 2>&1 && alias vim="nvim"
+command -v youtube-dl >/dev/null 2>&1 && alias yt-dl-mp3='youtube-dl -x --audio-format mp3'
+command -v pyenv >/dev/null 2>&1 && eval "$(pyenv init -)"
 
 [ -r ~/.zshrc-os ] && source ~/.zshrc-os
 [ -r ~/.zshrc-machine ] && source ~/.zshrc-machine
