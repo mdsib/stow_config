@@ -2,11 +2,10 @@
 clear Lock
 
 ! caps to ctrl
-keycode 66 = Control_L
-add Control = Control_L
+keycode 66 = Mode_switch
 
 ! mapping esc to caps + semicolon
- keycode 47 = semicolon colon Escape
+keycode 47 = semicolon colon Escape
 
 ! vim-like
 keycode 43 = h H Left XF86Back

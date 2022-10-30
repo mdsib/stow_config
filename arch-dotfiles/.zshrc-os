@@ -2,4 +2,7 @@
 alias keycodes='xmodmad -pke'
 alias packer='TMPDIR=$HOME/build packer'
 export PATH=$PATH:/Users/mds/opt/urn/bin
-xmodmap ~/.modmap-esc
+
+# set up custom keybindings
+xmodmap ~/.modmap-esc # esc key becomes mode_switch (altgr)
+command -v xcape >/dev/null 2>&1 && xcape -e 'Mode_switch=Escape' # make esc esc again
