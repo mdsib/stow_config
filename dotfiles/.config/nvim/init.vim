@@ -1,4 +1,4 @@
-et backup             " keep a backup file (restore to previous version)
+set backup             " keep a backup file (restore to previous version)
 set undofile           " keep an undo file (undo changes after closing)
 set ruler              " show the cursor position all the time
 set showcmd            " display incomplete commands
