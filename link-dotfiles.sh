@@ -1,31 +1,38 @@
 #!/usr/bin/env bash
 
+# globstar for recursive globs
+# dotglob for all the hidden files
 shopt -s globstar dotglob
 
+# tgt: where the dotfiles are moved to
 tgt="$HOME"
+# dry: 1 means don't run any commands that make changes
 dry=0
+# verbose: ...
 verbose=0
-forced_action=""
+# forced action: what to automatically do, if anything, when a conflict happens
+forced_action="none"
 
-while getopts dvms name
+# i COULD add replace here
+while getopts dvbs name
 do
     case "$name" in
         d) dry=1;;
         v) verbose=$((verbose + 1));;
-        m) forced_action="m";;
-        s) forced_action="s";;
+        b) forced_action="backup";;
+        s) forced_action="skip";;
         ?) printf "Usage: %s [options]
    -d     dry run
    -v     verbose
    -vv    more verbose
    -vvv   too verbose
-   -m     move conflicts to <...>.old
-   -s     skip conflicts, keeping original file
+   -b     backup conflicting files
+   -s     skip and don't link conflicting files
 " "$0"; exit 1;;
     esac
 done
 
-# check if we've set up
+# check if we've set up, and conveniently ask to do the setup if not.
 if [ ! -r "$STOW_DIR" ] || [ ! "$STOW_PROFILE" ]; then
     read -rn 1 -p "Run setup? " do_setup
     printf '\n'
@@ -38,6 +45,8 @@ if [ ! -r "$STOW_DIR" ] || [ ! "$STOW_PROFILE" ]; then
     fi
 fi
 
+# because echo is bad because a dash - in var interpreted as arg
+# see https://github.com/anordal/shellharden/blob/master/how_to_do_things_safely_in_bash.md#echo--printf
 println() {
     printf "%s\n" "$@"
 }
@@ -52,7 +61,7 @@ d() {
     fi
 }
 
-# verbose output
+# verbosity
 v() {
     if [ "$verbose" -ge 1 ]; then
         println "INFO: $*"
@@ -77,10 +86,14 @@ mk_lnk() {
 }
 
 process() {
-    local action=""
     vvv "Processing ${1}"
 
+    # what to do if there's a conflict
+    # none means no conflict
+    local action="none"
+    # where the symlink should go
     local dst_file="${tgt}/${1#*/}"
+    # absolute path of current dotfile
     local abs_origin="${STOW_DIR}/${1}"
 
     # make dir
@@ -93,31 +106,38 @@ process() {
     # check if we have a conflict (file exists and isn't a symlink to stow_config)
     if [ -f "$dst_file" ] && [ "$(realpath -qe "$dst_file")" != "$abs_origin" ]; then
         v "Conflict!"
-        if [ "$forced_action" != "" ]; then
-            vv "Forcing action: $forced_action"
-        fi
-        # use the flagged action if there is one
-        action="$forced_action"
 
-        while [ ! "$action" = "m" ] && [ ! "$action" = "s" ]
+        # use the flagged action if there is one
+        if [ "$forced_action" != "none" ]; then
+            vv "Forcing action: $forced_action"
+            action="$forced_action"
+        fi
+
+        # goad user (aka myself in the future) into making a decision
+        while [ "$action" == "none" ]
         do
             printf "%s" "
 File ${dst_file} exists! What do you wanna do?
-(V)iew the diff
-(m)ove it to ${dst_file}.old
+(D)iff it
+(b)ack it up
 (s)kip it
+(r)eplace it
 Your choice: "
-            read -r action
-            if [ "$action" = "" ]; then
-                action="v"
-            fi
-            case "${action}" in
-                v)
+            read -r choice
+            case "${choice:-v}" in
+                d|D)
                     v "Diffing..."
                     less -R < <(println "Left is yours, right is stow_config's";
                                 diff -s --color=always "$dst_file" "$abs_origin")
                     ;;
-                m|s)
+                b|B)
+                    action="backup"
+                    ;;
+                s|S)
+                    action="skip"
+                    ;;
+                r|R)
+                    action="replace"
                     ;;
                 *)
                     println "Invalid choice."
@@ -126,27 +146,30 @@ Your choice: "
         done
     fi
 
-    # conflict
-    #   skip: no op
-    #   move: move, then link
-    # no conflict
+    # skip: no op
+    # backup: ln -sb
+    # replace: ln -sf
+    # none
     #   file exists: no op
-    #   no file exists: link
-
+    #   no file exists: ln -s
     case "${action}" in
-        m)
-            v "Moving ${dst_file} -> ${dst_file}.old"
-            d mv "$dst_file" "${dst_file}.old"
-            mk_lnk
+        backup)
+            v "Backing up and linking ${abs_origin} to ${dst_file}"
+            d ln -s --backup=numbered "$abs_origin" "$dst_file"
             ;;
-        s)
+        skip)
             v "${dst_file} exists. Skipping..."
             ;;
-        "")
-            if [ -f $dst_file ]; then
+        replace)
+            v "Forcibly linking ${abs_origin} to ${dst_file}"
+            d ln -sf "$abs_origin" "$dst_file"
+            ;;
+        none)
+            if [ -f "$dst_file" ]; then
                 vvv "${dst_file} already linked. Moving on."
             else
-                mk_lnk
+                v "Linking ${abs_origin} to ${dst_file}"
+                d ln -s "$abs_origin" "$dst_file"
             fi
             ;;
     esac
