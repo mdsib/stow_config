@@ -35,8 +35,9 @@ command -v pyenv >/dev/null 2>&1 && eval "$(pyenv init -)"
 [ -r ~/.zshrc-os ] && source ~/.zshrc-os
 [ -r ~/.zshrc-machine ] && source ~/.zshrc-machine
 
+# TODO: actually remove this?
 # run fzf's install to generate .fzf.zsh. You can skip updating this file.
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 [ -f $STOW_DIR/submodules/z/z.sh ] && source $STOW_DIR/submodules/z/z.sh
 
