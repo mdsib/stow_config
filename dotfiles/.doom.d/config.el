@@ -6,8 +6,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
-(setq user-full-name "massi"
-      user-mail-address "hi@massi.world")
+;; (setq user-full-name "abc"
+;;       user-mail-address "xyz@web.site")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
@@ -32,7 +32,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-solarized-dark)
 (if (member-ignore-case "juliamono" (font-family-list))
     (set-face-attribute 'default nil :family "juliamono"))
 (set-face-attribute 'default nil :height 120)
@@ -78,8 +78,36 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+
+;; keybindings
+(map! :leader :desc "Run shell command in pwd" "\"" #'shell-command)
+(map! :leader :desc "Run shell command in pwd" "t R"  #'rainbow-mode)
+
+;; mode settings
 (after! svelte-mode
-  (add-hook 'svelte-mode-hook #'lsp)
-  )
+  (add-hook 'svelte-mode-hook #'lsp))
+
+(after! lsp-javascript
+  (set-lsp-priority! 'deno-ls 1)
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-tramp-connection
+                                     (cons lsp-clients-deno-server lsp-clients-deno-server-args))
+
+                    ;; from lsp-mode/clients/lsp-javascript.el for deno default settings
+                    :initialization-options #'lsp-clients-deno--make-init-options
+                    :activation-fn #'lsp-typescript-javascript-tsx-jsx-activate-p
+
+                    :priority 1
+                    :remote? t
+                    :server-id 'deno-remote-ls)))
 
 (setq auth-sources '("~/.authinfo"))
+
+
+(define-generic-mode 'xmodmap-mode
+  '(?!)
+  '("add" "clear" "keycode" "keysym" "pointer" "remove")
+  nil
+  '("[xX]?modmap\\(-.+\\)?\\'")
+  nil
+  "Simple mode for xmodmap files.")

@@ -1,20 +1,41 @@
-! making a layer
 clear Lock
 
-! caps to ctrl
+! replace caps with this weird thing
+
 keycode 66 = Mode_switch
 
+
+! the order goes:
+! no mods
+! shift
+! mode_switch
+! mode_switch + shift
+
+
 ! mapping esc to caps + semicolon
+! note that xcape will make mode_switch act as esc on it's own too,
+! but in remote emacs sessions xcape breaks.
+
 keycode 47 = semicolon colon Escape
 
-! vim-like
-keycode 43 = h H Left XF86Back
-keycode 44 = j J Down
-keycode 45 = k K Up
-keycode 46 = l L Right XF86Forward
 
-! wasd
-keycode 25 = w W Up
-keycode 38 = a A Left
-keycode 39 = s S Down
-keycode 40 = d D Right
+
+! vim-like
+
+keycode 43 = h H Left Left
+keycode 44 = j J Down Down
+keycode 45 = k K Up Up
+keycode 46 = l L Right Right
+
+
+! easy to reach parens and braces
+
+keycode 30 = u          U           parenleft
+keycode 31 = i          I           braceleft
+keycode 32 = o          O           braceright
+keycode 33 = p          P           parenright
+
+keycode 58 = m          M           bracketleft
+keycode 59 = comma      less        less
+keycode 60 = period     greater     greater
+keycode 61 = slash      question    bracketright

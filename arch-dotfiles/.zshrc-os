@@ -1,9 +1,2 @@
 # arch
-alias keycodes='xmodmad -pke'
-alias packer='TMPDIR=$HOME/build packer'
-export PATH=$PATH:/Users/mds/opt/urn/bin
-
-# set up custom keybindings
-# TODO: why is this here, x isn't guaranteed in any login anything! window manager should be handling this or something
-# xmodmap ~/.modmap-esc # esc key becomes mode_switch (altgr)
-command -v xcape >/dev/null 2>&1 && xcape -e 'Mode_switch=Escape' # make esc esc again
+alias keycodes='xmodmap -pke'

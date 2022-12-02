@@ -28,7 +28,7 @@ floating_modifier $mod
 
 # start a terminal
 # bindsym $mod+Return exec terminal
-bindsym $mod+Return exec --no-startup-id xterm
+bindsym $mod+Return exec --no-startup-id urxvt
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -114,7 +114,7 @@ bindsym $mod+q split toggle
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
+# bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
@@ -218,7 +218,7 @@ bindsym $mod+Tab workspace back_and_forth
 # assign [class="Skype"] $ws5
 assign [class="Emacs"] $wsZ
 assign [class="UXTerm"] $wsX
-assign [class="XTerm"] $wsX
+assign [class="URxvt"] $wsX
 assign [window_role="browser"] $wsC
 
 # Open specific applications in floating mode
@@ -258,7 +258,7 @@ for_window [urgent=latest] focus
 
 # mds: why do I need this when I have inplace restart?
 # reload the configuration file
-# bindsym $mod+Shift+c reload
+bindsym $mod+Shift+y reload
 # bindsym $mod+Shift+v reload
 
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -308,22 +308,19 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
-# Lock screen
-bindsym $mod+9 exec --no-startup-id blurlock
-
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 # exec --no-startup-id nitrogen --restore; sleep 1; picom -b
 # exec --no-startup-id manjaro-hello
 exec --no-startup-id nm-applet
 exec --no-startup-id xfce4-power-manager
-exec --no-startup-id pamac-tray
+# exec --no-startup-id pamac-tray
 # exec clipit
 exec --no-startup-id blueman-applet
 # exec_always --no-startup-id sbxkb
 exec --no-startup-id start_conky_maia
 # exec --no-startup-id start_conky_green
-exec --no-startup-id xautolock -time 10 -locker blurlock
+exec --no-startup-id xscreensaver --no-splash
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
 
@@ -459,12 +456,13 @@ mode "$mode_gaps_outer" {
 
 # my stuff
 
-# this could probably be loaded via the shell instead of here
+# should be a udev thing? or both?
 exec exec xrdb ~/.Xresources
-
 exec xset r rate 220 45
+exec --no-startup-id xcape -e 'Mode_switch=Escape' # make esc esc again
 
 exec --no-startup-id xfce4-clipman
 bindsym $mod+Shift+s --release exec --no-startup-id i3-scrot -sc
 bindsym $mod+Shift+v --release exec --no-startup-id xfce4-clipman-history
 bindsym $mod+8 move workspace to output down
+bindsym $mod+s exec xscreensaver-command --activate

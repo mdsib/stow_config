@@ -5,16 +5,10 @@ HISTFILE=~/.history
 # cfg for dotfile management
 source ~/.stow-cfg
 
-# vi mode
-bindkey -v
-
 # edit line in editor
-autoload edit-command-line; zle -N edit-command-line
+autoload edit-command-line
+zle -N edit-command-line
 bindkey -M vicmd v edit-command-line
-
-# keep ctrl n and p around
-bindkey ^n down-history
-bindkey ^p up-history
 
 setopt APPEND_HISTORY
 setopt INC_APPEND_HISTORY
@@ -27,10 +21,43 @@ setopt NO_BEEP
 setopt EXTENDED_GLOB
 setopt CORRECT
 
-command -v git >/dev/null 2>&1 && alias g="git"
-command -v nvim >/dev/null 2>&1 && alias vim="nvim"
-command -v youtube-dl >/dev/null 2>&1 && alias yt-dl-mp3='youtube-dl -x --audio-format mp3'
-command -v pyenv >/dev/null 2>&1 && eval "$(pyenv init -)"
+_q() {
+    $@ 1>/dev/null 2>&1
+}
+check() {
+    _q hash $@
+}
+
+check git && alias g="git"
+check nvim && alias vim="nvim"
+check youtube-dl && alias yt-dl-mp3='youtube-dl -x --audio-format mp3'
+check pyenv && eval "$(pyenv init -)"
+check emacsclient && alias em="emacsclient -t --create-frame --alternate-editor=\"\""
+
+# zsh builtin help
+unalias run-help 2>/dev/null
+autoload run-help
+zshver=$(zsh --version)
+zshver=${zshver#* }
+zshver=${zshver% *}
+HELPDIR="/usr/share/zsh/${zshver}/help"
+alias help=run-help
+
+alias ls=ls --color=auto
+alias grep=grep -P
+_q hash
+h() {
+    history 1-9999 | grep -P "$*"
+}
+if _q hash fd; then
+    alias f=fd --prune
+    fa() {
+        fd --prune '\b'"$*"'\b'
+    }
+    fda() {
+        fd '\b'"$*"'\b'
+    }
+fi
 
 [ -r ~/.zshrc-os ] && source ~/.zshrc-os
 [ -r ~/.zshrc-machine ] && source ~/.zshrc-machine
@@ -88,7 +115,3 @@ compinit
 
 [ -f $STOW_DIR/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh ] && \
     source $STOW_DIR/submodules/zsh-npm/zsh-better-npm-completion.plugin.zsh
-
-
-# Sigma stuff
-[ -r ~/.sigma/zsh ] && source ~/.sigma/zsh
